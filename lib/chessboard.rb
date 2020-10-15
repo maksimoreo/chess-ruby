@@ -2,20 +2,6 @@
 
 # Container of 64 spaces for chess pieces
 class Chessboard
-  def self.decode_pos(str)
-    raise 'expected a string' unless str.is_a?(String)
-    raise "invalid position: #{str}" unless str =~ /^[a-h][1-8]$/
-
-    [str[0].ord - 'a'.ord, str[1].to_i - 1]
-  end
-
-  def self.encode_pos(array)
-    raise 'expected an array' unless array.is_a?(Array)
-    raise "invalid position #{array}" unless array.size == 2 && array[0].between?(0, 7) && array[1].between?(0, 7)
-
-    [(array[0] + 'a'.ord).chr, (array[1] + 1).to_s].join
-  end
-
   # Creates an empty chess board
   def initialize
     @board = Array.new(8) { Array.new(8, nil) }
@@ -23,7 +9,8 @@ class Chessboard
 
   # Returns chess piece or nil if cell is empty
   def chess_piece_at(position)
-    position = Chessboard.decode_pos(position)
+    raise 'expected ChessPosition object' unless position.is_a?(ChessPosition)
+
     at(position)
   end
 
@@ -32,18 +19,14 @@ class Chessboard
     unless chess_piece.class.ancestors.include?(ChessPiece)
       raise 'only ChessPiece objects or derived objects can be placed on ChessBoard'
     end
-
-    position = Chessboard.decode_pos(position)
-
-    raise 'cell is not empty' unless @board[position[0]][position[1]].nil?
+    raise 'expected ChessPosition object' unless position.is_a?(ChessPosition)
+    raise 'cell is not empty' unless at(position).nil?
 
     place_at(chess_piece, position)
   end
 
   # Calls #move() method on a chess piece at 'from' position
-  def move(from, to)
-    from_pos = Chessboard.decode_pos(from)
-    to_pos = Chessboard.decode_pos(to)
+  def move(from_pos, to_pos)
     chess_piece = at(from_pos)
     destination = at(to_pos)
 
@@ -61,10 +44,10 @@ class Chessboard
   private
 
   def at(position)
-    @board[position[0]][position[1]]
+    @board[position.i][position.j]
   end
 
   def place_at(object, position)
-    @board[position[0]][position[1]] = object
+    @board[position.i][position.j] = object
   end
 end
