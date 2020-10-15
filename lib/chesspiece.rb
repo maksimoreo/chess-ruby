@@ -1,4 +1,4 @@
-
+# frozen_string_literal: true
 
 # Base class for chess pieces. ChessPiece objects can be placed on chess board
 class ChessPiece
@@ -6,5 +6,5 @@ class ChessPiece
     @name = name
   end
 
-  # derived classes should implement move(from, to, chessboard)
+  # Derived classes should implement move(from, to, chessboard)
 end
