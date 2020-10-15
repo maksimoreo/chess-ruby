@@ -2,8 +2,13 @@
 
 # Base class for chess pieces. ChessPiece objects can be placed on chess board
 class ChessPiece
-  def initialize(name)
+  attr_reader :name, :color
+
+  def initialize(name, color)
+    raise "invalid color: #{color}, must be :white or :black" unless color == :white || color == :black
+
     @name = name
+    @color = color
   end
 
   # Derived classes should implement move(from, to, chessboard)

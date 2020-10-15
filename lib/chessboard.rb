@@ -40,6 +40,24 @@ class Chessboard
     place_at(chess_piece, position)
   end
 
+  # Calls #move() method on a chess piece at 'from' position
+  def move(from, to)
+    from_pos = Chessboard.decode_pos(from)
+    to_pos = Chessboard.decode_pos(to)
+    chess_piece = at(from_pos)
+    destination = at(to_pos)
+
+    raise 'move from is empty' if chess_piece.nil?
+
+    # Chess piece cannot move onto chess pieces of the same color
+    unless destination.nil?
+      raise 'cannot move onto chess piece of the same color' if destination.color == chess_piece.color
+    end
+
+    # Chess piece moves by its own rules
+    chess_piece.move(from_pos, to_pos, self)
+  end
+
   private
 
   def at(position)

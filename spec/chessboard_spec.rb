@@ -1,6 +1,6 @@
 #spec/chessboard_spec.rb
 require './lib/chessboard'
-require './lib/chesspiece'
+require './lib/chesspieces/chesspiece'
 
 describe Chessboard do
   describe '.decode_pos' do
@@ -39,7 +39,7 @@ describe Chessboard do
 
     it 'returns chess piece that was placed here' do
       chessboard = Chessboard.new
-      figure = ChessPiece.new('Some chess piece')
+      figure = ChessPiece.new('Some chess piece', :black)
       chessboard.place_chess_piece(figure, 'e7')
       expect(chessboard.chess_piece_at('e7')).to eql(figure)
     end
@@ -48,7 +48,7 @@ describe Chessboard do
   describe '#place_chess_piece' do
     it 'places a chess piece on the board' do
       chessboard = Chessboard.new
-      figure = ChessPiece.new('Some chess piece')
+      figure = ChessPiece.new('Some chess piece', :white)
       chessboard.place_chess_piece(figure, 'e7')
       expect(chessboard.chess_piece_at('e7')).to eql(figure)
     end
