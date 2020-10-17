@@ -42,19 +42,19 @@ class ChessPosition
     {i: i, j: j}
   end
 
-  def up
-    (i + 1).between?(0, 7) ? ChessPosition.new(i + 1, j) : nil
+  def up(by = 1)
+    (i + by).between?(0, 7) ? ChessPosition.new(i + by, j) : nil
   end
 
-  def down
-    (i - 1).between?(0, 7) ? ChessPosition.new(i - 1, j) : nil
+  def down(by = 1)
+    (i - by).between?(0, 7) ? ChessPosition.new(i - by, j) : nil
   end
 
-  def right
-    (j + 1).between?(0, 7) ? ChessPosition.new(i, j + 1) : nil
+  def right(by = 1)
+    (j + by).between?(0, 7) ? ChessPosition.new(i, j + by) : nil
   end
 
-  def left
-    (j - 1).between?(0, 7) ? ChessPosition.new(i, j - 1) : nil
+  def left(by = 1)
+    (j - by).between?(0, 7) ? ChessPosition.new(i, j - by) : nil
   end
 end
