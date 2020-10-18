@@ -1,17 +1,24 @@
 # frozen_string_literal: true
 
-# Container of 64 spaces for chess pieces
+require 'chessboard_grid'
+
+# Holds information about chess game
+# (chessboard, history, castlings)
 class Chessboard
   # Creates an empty chess board
   def initialize
-    @board = Array.new(8) { Array.new(8, nil) }
+    @board = ChessboardGrid.new
+  end
+
+  def grid
+    @board
   end
 
   # Returns chess piece or nil if cell is empty
   def chess_piece_at(position)
     raise 'expected ChessPosition object' unless position.is_a?(ChessPosition)
 
-    at(position)
+    @board[position]
   end
 
   # Places chess piece at specified position
@@ -20,34 +27,39 @@ class Chessboard
       raise 'only ChessPiece objects or derived objects can be placed on ChessBoard'
     end
     raise 'expected ChessPosition object' unless position.is_a?(ChessPosition)
-    raise 'cell is not empty' unless at(position).nil?
+    raise 'cell is not empty' unless @board[position].nil?
 
-    place_at(chess_piece, position)
+    @board[position] = chess_piece
   end
 
   # Calls #move() method on a chess piece at 'from' position
   def move(from_pos, to_pos)
-    chess_piece = at(from_pos)
-    destination = at(to_pos)
+    chess_piece = @board[from_pos]
 
     raise 'move from is empty' if chess_piece.nil?
 
-    # Chess piece cannot move onto chess pieces of the same color
-    unless destination.nil?
-      raise 'cannot move onto chess piece of the same color' if destination.color == chess_piece.color
-    end
-
     # Chess piece moves by its own rules
-    chess_piece.move(from_pos, to_pos, self)
+    move_was_performed = chess_piece.move(from_pos, to_pos, self)
+
+    # Return indicator that move was performed
+    move_was_performed
   end
 
-  private
-
-  def at(position)
-    @board[position.i][position.j]
+  def available_moves(color)
+    # all_available_moves = []
+    # for each piece _p on the board
+    #   if _color == _p.color
+    #     _moves = get available moves
+    #     for each move _move in _moves
+    #       _new_board = try perform the move _move
+    #       unless _new_board.is_check?(color)
+    #         all_available_moves << _move
+    # return all_available_moves
   end
 
-  def place_at(object, position)
-    @board[position.i][position.j] = object
+  def is_check?(color)
+    # find king's position
+    # find any piece that is attacking king's position
+    # return true if found
   end
 end
