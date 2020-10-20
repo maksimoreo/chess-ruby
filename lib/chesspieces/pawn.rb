@@ -16,11 +16,11 @@ class Pawn < ChessPiece
     'Pawn'
   end
 
-  def allowed_moves(from, chessboard)
+  def available_moves(from, chessboard)
     if @color == :white
-      allowed_moves_white(from, chessboard.grid)
+      available_moves_white(from, chessboard.grid)
     else
-      allowed_moves_black(from, chessboard.grid)
+      available_moves_black(from, chessboard.grid)
     end
   end
 
@@ -36,7 +36,7 @@ class Pawn < ChessPiece
     end
   end
 
-  def allowed_moves_white(from, chessboard_grid)
+  def available_moves_white(from, chessboard_grid)
     moves = []
 
     # no moves available if pawn is at the top (*8)
@@ -72,7 +72,7 @@ class Pawn < ChessPiece
     moves
   end
 
-  def allowed_moves_black(from, chessboard_grid)
+  def available_moves_black(from, chessboard_grid)
     moves = []
 
     # no moves available if pawn is at the bottom (*1)

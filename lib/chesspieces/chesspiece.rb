@@ -22,14 +22,14 @@ class ChessPiece
   end
 
   # Returns array of ChessPositions where the chess piece can go from current position
-  def allowed_moves(from, chessboard)
+  def available_moves(from, chessboard)
     []
   end
 
   # Moves ChessPiece from _from to _to on chessboard.
   # Derived class may override this behavior (pawn promotion, castling)
   def move(from, to, chessboard)
-    move_is_allowed = self.allowed_moves(from, chessboard).include?(to)
+    move_is_allowed = self.available_moves(from, chessboard).include?(to)
 
     if move_is_allowed
       chessboard.grid.move(from, to)
