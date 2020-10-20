@@ -103,5 +103,7 @@ class Pawn < ChessPiece
         end
       end
     end
+
+    moves
   end
 end
