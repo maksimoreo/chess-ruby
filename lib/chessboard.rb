@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
-require 'chessboard_grid'
+require_relative 'chessboard_grid'
+require_relative 'chess_position'
 
 # Holds information about chess game
 # (chessboard, history, castlings)
@@ -8,6 +9,27 @@ class Chessboard
   # Creates an empty chess board
   def initialize
     @board = ChessboardGrid.new
+
+    @info = {
+      white: {
+        king_position: ChessPosition.from_s('e1'),
+        castling: {
+          queenside: true, kingside: true
+        }
+      },
+      black: {
+        king_position: ChessPosition.from_s('e8'),
+        castling: {
+          queenside: true, kingside: true
+        }
+      }
+    }
+
+    @white_king_position = ChessPosition.from_s('e1')
+    @black_king_position = ChessPosition.from_s('e8')
+
+    @white_castling = { queenside: true, kingside: true }
+    @black_castling = { queenside: true, kingside: true }
   end
 
   def grid
@@ -57,9 +79,9 @@ class Chessboard
     # return all_available_moves
   end
 
-  def is_check?(color)
-    # find king's position
-    # find any piece that is attacking king's position
-    # return true if found
+  def check?(color)
+    @board.each_chess_piece_with_pos.any? do | chess_piece, cpos |
+      chess_piece.available_moves(cpos, self).include?(@info[color][:king_pos])
+    end
   end
 end

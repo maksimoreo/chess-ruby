@@ -38,4 +38,18 @@ describe Chessboard do
       }.to raise_error(RuntimeError)
     end
   end
+
+  describe '#check?' do
+    it 'returns false on empty board' do
+      chessboard = Chessboard.new
+      expect(chessboard.check?(:white)).to eql(false)
+      expect(chessboard.check?(:black)).to eql(false)
+    end
+
+    it 'returns true when king is under attack' do
+      chessboard = Chessboard.new
+      chessboard.place_chess_piece(Pawn.white, ChessPosition.from_s('f7'))
+      expect(chessboard.check?(:black)).to eql(true)
+    end
+  end
 end
