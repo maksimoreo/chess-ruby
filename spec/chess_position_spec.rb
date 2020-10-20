@@ -11,8 +11,8 @@ describe ChessPosition do
 
     it 'returns ChessPosition object converted from string' do
       cpos = ChessPosition.from_s('e8')
-      expect(cpos.i).to eql(4)
-      expect(cpos.j).to eql(7)
+      expect(cpos.i).to eql(7)
+      expect(cpos.j).to eql(4)
     end
 
     it 'returns nil if string is incorrect' do

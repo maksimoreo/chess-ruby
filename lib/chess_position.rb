@@ -8,7 +8,7 @@ class ChessPosition
     str = str.downcase
 
     if str =~ /^[a-h][1-8]$/
-      ChessPosition.new(str[0].ord - 'a'.ord, str[1].to_i - 1)
+      ChessPosition.new(str[1].to_i - 1, str[0].ord - 'a'.ord)
     else
       nil
     end
@@ -35,7 +35,7 @@ class ChessPosition
   end
 
   def to_s
-    "#{('a'.ord + i).chr}#{j}"
+    "#{('a'.ord + j).chr}#{i}"
   end
 
   def to_a
