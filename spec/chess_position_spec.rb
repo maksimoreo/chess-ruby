@@ -39,4 +39,17 @@ describe ChessPosition do
       expect(cpos).to eql(nil)
     end
   end
+
+  describe '.from_i' do
+    it 'returns ChessPosition object converted from integer' do
+      cpos = ChessPosition.from_i(17)
+      expect(cpos.i).to eql(2)
+      expect(cpos.j).to eql(1)
+    end
+
+    it 'returns nil if array is incorrect' do
+      cpos = ChessPosition.from_i(64)
+      expect(cpos).to eql(nil)
+    end
+  end
 end

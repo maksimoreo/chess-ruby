@@ -23,6 +23,10 @@ class ChessPosition
     end
   end
 
+  def self.from_i(integer)
+    integer.between?(0, 63) ? ChessPosition.new(integer / 8, integer % 8) : nil
+  end
+
   def initialize(i, j)
     raise "invalid position: #{i}, #{j}" unless i.between?(0, 7) && j.between?(0, 7)
 
