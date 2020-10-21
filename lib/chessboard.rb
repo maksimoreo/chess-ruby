@@ -6,9 +6,11 @@ require_relative 'chess_position'
 # Holds information about chess game
 # (chessboard, history, castlings)
 class Chessboard
-  # Creates an empty chess board
+  attr_reader :grid
+
+  # Creates an empty chessboard
   def initialize
-    @board = ChessboardGrid.new
+    @grid = ChessboardGrid.new
 
     @info = {
       white: {
@@ -32,15 +34,11 @@ class Chessboard
     @black_castling = { queenside: true, kingside: true }
   end
 
-  def grid
-    @board
-  end
-
   # Returns chess piece or nil if cell is empty
   def chess_piece_at(position)
     raise 'expected ChessPosition object' unless position.is_a?(ChessPosition)
 
-    @board[position]
+    @grid[position]
   end
 
   # Places chess piece at specified position
@@ -49,14 +47,14 @@ class Chessboard
       raise 'only ChessPiece objects or derived objects can be placed on ChessBoard'
     end
     raise 'expected ChessPosition object' unless position.is_a?(ChessPosition)
-    raise 'cell is not empty' unless @board[position].nil?
+    raise 'cell is not empty' unless @grid[position].nil?
 
-    @board[position] = chess_piece
+    @grid[position] = chess_piece
   end
 
   # Calls #move() method on a chess piece at 'from' position
   def move(from_pos, to_pos)
-    chess_piece = @board[from_pos]
+    chess_piece = @grid[from_pos]
 
     raise 'move from is empty' if chess_piece.nil?
 
@@ -80,7 +78,7 @@ class Chessboard
   end
 
   def check?(color)
-    @board.each_chess_piece_with_pos.any? do | chess_piece, cpos |
+    @grid.each_chess_piece_with_pos.any? do | chess_piece, cpos |
       chess_piece.available_moves(cpos, self).include?(@info[color][:king_pos])
     end
   end
