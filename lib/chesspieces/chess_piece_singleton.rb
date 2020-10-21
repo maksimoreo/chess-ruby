@@ -1,18 +1,18 @@
 module ChessPieceSingleton
-  @@white = nil
-  @@black = nil
+  @white = nil
+  @black = nil
 
   def white
-    if @@white.nil?
-      @@white = self.new(:white)
+    if @white.nil?
+      @white = self.new(:white)
     end
-    @@white
+    @white
   end
 
   def black
-    if @@black.nil?
-      @@black = self.new(:black)
+    if @black.nil?
+      @black = self.new(:black)
     end
-    @@black
+    @black
   end
 end
