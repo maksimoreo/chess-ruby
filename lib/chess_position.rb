@@ -1,8 +1,6 @@
+require_relative 'point'
 
-
-class ChessPosition
-  attr_reader :i, :j
-
+class ChessPosition < Point
   # Returns nil if incorrect string
   def self.from_s(str)
     str = str.downcase
@@ -38,29 +36,11 @@ class ChessPosition
     "#{('a'.ord + j).chr}#{i + 1}"
   end
 
-  def to_a
-    [i, j]
-  end
-
-  def to_h
-    {i: i, j: j}
-  end
-
-  def ==(other)
-    other.is_a?(ChessPosition) && i == other.i && j == other.j
-  end
-
-  def eql?(other)
-    self == other
-  end
-
-  def hash
-    [i, j].hash
-  end
-
   def +(other)
-    if (i + other.i).between?(0, 7) && (j + other.j).between?(0, 7)
-      ChessPosition.new(i + other.i, j + other.j)
+    new_i = i + other.i
+    new_j = j + other.j
+    if new_i.between?(0, 7) && new_j.between?(0, 7)
+      ChessPosition.new(new_i, new_j)
     else
       nil
     end
