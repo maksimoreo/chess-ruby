@@ -97,5 +97,3 @@ class Pawn < ChessPiece
     moves
   end
 end
-
-p Pawn.white.name
