@@ -52,4 +52,32 @@ describe ChessPosition do
       expect(cpos).to eql(nil)
     end
   end
+
+  describe '#to_s' do
+    it 'returns chessboard cell position in algebraic notation' do
+      expect(ChessPosition.new(4, 2).to_s).to eql('c5')
+    end
+
+    it 'returns same string as .from_s argument' do
+      string = 'e8'
+      expect(ChessPosition.from_s(string).to_s).to eql(string)
+    end
+  end
+
+  describe '#to_a' do
+    it 'returns chessboard cell position as array' do
+      expect(ChessPosition.new(3, 5).to_a).to eql([3, 5])
+    end
+
+    it 'returns same array as .from_a argument' do
+      array = [6, 0]
+      expect(ChessPosition.from_a(array).to_a).to eql(array)
+    end
+  end
+
+  describe '#to_h' do
+    it 'returns chessboard cell position as array' do
+      expect(ChessPosition.new(7, 1).to_h).to eql({ i: 7, j: 1})
+    end
+  end
 end

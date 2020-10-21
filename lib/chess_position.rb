@@ -35,7 +35,7 @@ class ChessPosition
   end
 
   def to_s
-    "#{('a'.ord + j).chr}#{i}"
+    "#{('a'.ord + j).chr}#{i + 1}"
   end
 
   def to_a
