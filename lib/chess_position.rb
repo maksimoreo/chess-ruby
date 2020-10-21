@@ -46,6 +46,26 @@ class ChessPosition
     {i: i, j: j}
   end
 
+  def ==(other)
+    other.is_a?(ChessPosition) && i == other.i && j == other.j
+  end
+
+  def eql?(other)
+    self == other
+  end
+
+  def hash
+    [i, j].hash
+  end
+
+  def +(other)
+    if (i + other.i).between?(0, 7) && (j + other.j).between?(0, 7)
+      ChessPosition.new(i + other.i, j + other.j)
+    else
+      nil
+    end
+  end
+
   def up(by = 1)
     (i + by).between?(0, 7) ? ChessPosition.new(i + by, j) : nil
   end

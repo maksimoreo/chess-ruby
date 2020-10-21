@@ -80,4 +80,14 @@ describe ChessPosition do
       expect(ChessPosition.new(7, 1).to_h).to eql({ i: 7, j: 1})
     end
   end
+
+  describe '#+' do
+    it 'returns the sum of two ChessPosition objects' do
+      expect(ChessPosition.new(1, 2) + ChessPosition.new(6, 3)).to eql(ChessPosition.new(7, 5))
+    end
+
+    it 'returns nil if result is outside the chessboard' do
+      expect(ChessPosition.new(7, 2) + ChessPosition.new(1, 4)).to eql(nil)
+    end
+  end
 end
