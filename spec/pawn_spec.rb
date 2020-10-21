@@ -15,4 +15,18 @@ describe Pawn do
       expect(chess_piece_1).to equal(chess_piece_2)
     end
   end
+
+  describe '#name' do
+    it "retuns 'Pawn'" do
+      expect(Pawn.white.name).to eql("Pawn")
+    end
+
+    it 'always returns the same string object' do
+      expect(Pawn.white.name).to equal(Pawn.white.name)
+    end
+
+    it 'white and black #name methods return the same string object' do
+      expect(Pawn.white.name).to equal(Pawn.black.name)
+    end
+  end
 end

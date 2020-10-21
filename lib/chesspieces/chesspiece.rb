@@ -7,13 +7,11 @@ class ChessPiece
   extend ChessPieceSingleton
   private_class_method :new
 
-  attr_reader :name, :color
+  attr_reader :color, :name
 
-  def initialize(name, color)
+  def initialize(color)
     raise "invalid color: #{color}, must be :white or :black" unless color == :white || color == :black
-    raise 'color parameter must be a string or a symbol' unless name.is_a?(String) || name.is_a?(Symbol)
 
-    @name = name
     @color = color
   end
 
@@ -21,20 +19,20 @@ class ChessPiece
     "#{color} #{name}"
   end
 
+  def name
+    self.class.name
+  end
+
   # Returns array of ChessPositions where the chess piece can go from current position
-  def available_moves(from, chessboard)
+  def available_moves(_from, _chessboard)
     []
   end
 
   # Moves ChessPiece from _from to _to on chessboard.
   # Derived class may override this behavior (pawn promotion, castling)
   def move(from, to, chessboard)
-    move_is_allowed = self.available_moves(from, chessboard).include?(to)
-
-    if move_is_allowed
-      chessboard.grid.move(from, to)
-    end
-
+    move_is_allowed = available_moves(from, chessboard).include?(to)
+    chessboard.grid.move(from, to) if move_is_allowed
     move_is_allowed
   end
 end

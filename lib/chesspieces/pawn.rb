@@ -4,20 +4,10 @@ require_relative 'chesspiece'
 
 # Pawn chesspiece
 class Pawn < ChessPiece
-  def self.name
-    'Pawn'
-  end
-
-  def initialize(color)
-    super('Pawn', color)
-  end
-
-  def name
-    'Pawn'
-  end
+  @name = 'Pawn'
 
   def available_moves(from, chessboard)
-    if @color == :white
+    if color == :white
       available_moves_white(from, chessboard.grid)
     else
       available_moves_black(from, chessboard.grid)
@@ -107,3 +97,5 @@ class Pawn < ChessPiece
     moves
   end
 end
+
+p Pawn.white.name
