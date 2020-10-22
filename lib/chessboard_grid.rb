@@ -22,6 +22,14 @@ class ChessboardGrid
     self[from] = nil
   end
 
+  def can_move_or_take?(pos, color)
+    self[pos].nil? || self[pos].color != color
+  end
+
+  def cell_empty?(pos)
+    self[pos].nil?
+  end
+
   def each_chess_piece
     return to_enum(:each_chess_piece) unless block_given?
     @board.each { |cell| yield(cell) unless cell.nil? }
