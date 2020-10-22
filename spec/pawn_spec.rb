@@ -18,7 +18,7 @@ describe Pawn do
 
   describe '#name' do
     it "retuns 'Pawn'" do
-      expect(Pawn.white.name).to eql("Pawn")
+      expect(Pawn.white.name).to eql('Pawn')
     end
 
     it 'always returns the same string object' do
@@ -27,6 +27,20 @@ describe Pawn do
 
     it 'white and black #name methods return the same string object' do
       expect(Pawn.white.name).to equal(Pawn.black.name)
+    end
+  end
+
+  describe '.name' do
+    it "returns 'Pawn'" do
+      expect(Pawn.name).to eql('Pawn')
+    end
+
+    it 'always returns the same string object' do
+      expect(Pawn.name).to equal(Pawn.name)
+    end
+
+    it 'returns same string object as #name method' do
+      expect(Pawn.name).to equal(Pawn.white.name)
     end
   end
 end

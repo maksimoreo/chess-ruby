@@ -3,8 +3,6 @@ require_relative '../chess_position'
 require_relative '../chessboard'
 
 class Knight < ChessPiece
-  @name = 'Knight'
-
   # 8 default knight's moves
   @default_moves = [[2, 1], [2, -1], [1, 2], [1, -2], [-1, 2], [-1, -2], [-2, 1], [-2, -1]].map do |array|
     Point.from_a(array)

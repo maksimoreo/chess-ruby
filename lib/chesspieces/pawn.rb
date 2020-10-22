@@ -4,8 +4,6 @@ require_relative 'chesspiece'
 
 # Pawn chesspiece
 class Pawn < ChessPiece
-  @name = 'Pawn'
-
   def available_moves(from, chessboard)
     if color == :white
       available_moves_white(from, chessboard.grid)

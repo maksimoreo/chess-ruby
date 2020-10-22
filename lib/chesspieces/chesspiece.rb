@@ -7,7 +7,7 @@ class ChessPiece
   extend ChessPieceSingleton
   private_class_method :new
 
-  attr_reader :color, :name
+  attr_reader :color
 
   def initialize(color)
     raise "invalid color: #{color}, must be :white or :black" unless color == :white || color == :black
