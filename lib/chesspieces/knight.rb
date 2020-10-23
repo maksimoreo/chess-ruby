@@ -12,10 +12,9 @@ class Knight < ChessPiece
     @default_moves
   end
 
-  def available_moves(from, chessboard)
-    Knight.default_moves.map { |pos| from + pos }.reject { |pos| pos.nil? }.select do |pos|
-      destination = chessboard.chess_piece_at(pos)
-      destination.nil? || destination.color != color
-    end
+  def attack_cells(from, chessboard)
+    Knight.default_moves
+      .map { |direction| from + direction }
+      .reject { |move| move.nil? }
   end
 end

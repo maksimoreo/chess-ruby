@@ -1,27 +1,23 @@
 require_relative 'point'
 
 module DirectionalMoves
-  def available_moves_directions(from, cb_grid, directions)
+  def attack_cells_directions(from, cb_grid, directions)
     directions.reduce([]) do |moves, direction|
-      moves + available_moves_direction(from, cb_grid, direction)
+      moves + attack_cells_direction(from, cb_grid, direction)
     end
   end
 
-  def available_moves_direction(from, cb_grid, direction)
-    moves = []
-
+  def attack_cells_direction(from, cb_grid, direction)
+    cells = []
     current_cell = from + direction
 
-    loop do
-      break if current_cell.nil? # new cell is not on the chessboard
-
-      moves << current_cell if cb_grid.can_move_or_take?(current_cell, color)
-      break unless cb_grid.cell_empty?(current_cell)
-
+    until current_cell.nil?
+      cells << current_cell
+      break unless cb_grid[current_cell].nil?
       current_cell = current_cell + direction
     end
 
-    moves
+    cells
   end
 end
 
@@ -34,8 +30,8 @@ module DiagonalMoves
     attr_reader :directions
   end
 
-  def available_moves_diagonal(from, cb_grid)
-    available_moves_directions(from, cb_grid, DiagonalMoves.directions)
+  def attack_cells_diagonal(from, cb_grid)
+    attack_cells_directions(from, cb_grid, DiagonalMoves.directions)
   end
 end
 
@@ -48,7 +44,7 @@ module AxisAlignedMoves
     attr_reader :directions
   end
 
-  def available_moves_axis_aligned(from, cb_grid)
-    available_moves_directions(from, cb_grid, AxisAlignedMoves.directions)
+  def attack_cells_axis_aligned(from, cb_grid)
+    attack_cells_directions(from, cb_grid, AxisAlignedMoves.directions)
   end
 end

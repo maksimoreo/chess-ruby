@@ -12,6 +12,21 @@ class Pawn < ChessPiece
     end
   end
 
+  def attack_cells(from, chessboard)
+    if color == :white
+      attack_cells_direction(from, 1)
+    else
+      attack_cells_direction(from, -1)
+    end
+  end
+
+  # Pawn only attacks cells diagonally forward
+  def attack_cells(from, y_direction)
+    [[-1, y_direction], [1, y_direction]]
+      .map { |direction| from + Point.from_a(direction) }
+      .reject { |move| move.nil? }
+  end
+
   def move(from, to, chessboard)
     # Validate and perform move
     super

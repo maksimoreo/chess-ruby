@@ -5,7 +5,7 @@ class Queen < ChessPiece
   include DiagonalMoves
   include AxisAlignedMoves
 
-  def available_moves(from, chessboard)
-    available_moves_diagonal(from, chessboard.grid) + available_moves_axis_aligned(from, chessboard.grid)
+  def attack_cells(from, chessboard)
+    attack_cells_diagonal(from, chessboard.grid) + attack_cells_axis_aligned(from, chessboard.grid)
   end
 end
