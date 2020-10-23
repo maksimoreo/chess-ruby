@@ -1,4 +1,4 @@
-
+require_relative 'point'
 
 module DirectionalMoves
   def available_moves_directions(from, cb_grid, directions)
@@ -26,21 +26,29 @@ module DirectionalMoves
 end
 
 module DiagonalMoves
-  # @directions = [[1, 1], [1, -1], [-1, -1], [-1, 1]].map { |e| Point.from_a(e) }.freeze
   include DirectionalMoves
 
+  @directions = [[1, 1], [1, -1], [-1, -1], [-1, 1]].map { |e| Point.from_a(e) }.freeze
+
+  class << self
+    attr_reader :directions
+  end
+
   def available_moves_diagonal(from, cb_grid)
-    directions = [[1, 1], [1, -1], [-1, -1], [-1, 1]].map { |e| Point.from_a(e) }
-    available_moves_directions(from, cb_grid, directions)
+    available_moves_directions(from, cb_grid, DiagonalMoves.directions)
   end
 end
 
 module AxisAlignedMoves
-  # @directions = [[0, 1], [0, -1], [1, 0], [-1, 0]].map { |e| Point.from_a(e) }.freeze
   include DirectionalMoves
 
+  @directions = [[0, 1], [0, -1], [1, 0], [-1, 0]].map { |e| Point.from_a(e) }.freeze
+
+  class << self
+    attr_reader :directions
+  end
+
   def available_moves_axis_aligned(from, cb_grid)
-    directions = [[0, 1], [0, -1], [1, 0], [-1, 0]].map { |e| Point.from_a(e) }
-    available_moves_directions(from, cb_grid, directions)
+    available_moves_directions(from, cb_grid, AxisAlignedMoves.directions)
   end
 end
