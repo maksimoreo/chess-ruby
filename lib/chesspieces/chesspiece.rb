@@ -7,6 +7,10 @@ class ChessPiece
   extend ChessPieceSingleton
   private_class_method :new
 
+  def self.opposite_color(color)
+    color == :white ? :black : :white
+  end
+
   attr_reader :color
 
   def initialize(color)
