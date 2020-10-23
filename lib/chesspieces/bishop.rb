@@ -1,5 +1,4 @@
 require_relative 'chesspiece'
-require_relative '../chess_position'
 require_relative '../directional_moves'
 
 class Bishop < ChessPiece
