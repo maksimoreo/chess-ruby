@@ -21,8 +21,8 @@ class Pawn < ChessPiece
   end
 
   # Pawn only attacks cells diagonally forward
-  def attack_cells(from, y_direction)
-    [[-1, y_direction], [1, y_direction]]
+  def attack_cells_direction(from, row_direction)
+    [[row_direction, -1], [row_direction, 1]]
       .map { |direction| from + Point.from_a(direction) }
       .reject { |move| move.nil? }
   end
@@ -39,72 +39,47 @@ class Pawn < ChessPiece
     end
   end
 
-  def available_moves_white(from, chessboard_grid)
+  def available_moves_white(from, cb_grid)
     moves = []
 
     # no moves available if pawn is at the top (*8)
     unless from.i == 7
 
       # move up is available if nothing is blocking it
-      if chessboard_grid[from.up].nil?
+      if cb_grid.cell_empty?(from.up)
         moves << from.up
 
-        # move two spaces up is awailable from position (*2) if nothing is blocking
-        if from.i == 1 && chessboard_grid[from.up(2)].nil?
+        # move two spaces up from start position (*2) if nothing is blocking
+        if from.i == 1 && cb_grid.cell_empty?(from.up(2))
           moves << from.up(2)
         end
       end
 
-      # move to the right is available if can take something
-      if from.j < 7
-        piece = chessboard_grid[from.up.right]
-        if !piece.nil? && piece.color == :black
-          moves << from.up.right
-        end
-      end
-
-      # move to the left is available if can take something
-      if from.j > 0
-        piece = chessboard_grid[from.up.left]
-        if !piece.nil? && piece.color == :black
-          moves << from.up.left
-        end
-      end
+      # capture if cell isn't empty
+      moves += attack_cells_direction(from, 1).reject { |move| cb_grid.cell_empty?(move) }
     end
 
     moves
   end
 
-  def available_moves_black(from, chessboard_grid)
+  def available_moves_black(from, cb_grid)
     moves = []
 
     # no moves available if pawn is at the bottom (*1)
     unless from.i == 0
+
       # move down is available if nothing is blocking it
-      if chessboard_grid[from.down].nil?
+      if cb_grid.cell_empty?(from.down)
         moves << from.down
 
-        # move two spaces down is awailable from position (*7) if nothing is blocking
-        if from.i == 6 && chessboard_grid[from.down(2)].nil?
+        # move two spaces down from start position (*7) if nothing is blocking
+        if from.i == 6 && cb_grid.cell_empty?(from.down(2))
           moves << from.down(2)
         end
       end
 
-      # move to the right is available if can take something
-      if from.j < 7
-        piece = chessboard_grid[from.down.right]
-        if !piece.nil? && piece.color == :white
-          moves << from.down.right
-        end
-      end
-
-      # move to the left is available if can take something
-      if from.j > 0
-        piece = chessboard_grid[from.down.left]
-        if !piece.nil? && piece.color == :white
-          moves << from.down.left
-        end
-      end
+      # capture if cell isn't empty
+      moves += attack_cells_direction(from, -1).reject { |move| cb_grid.cell_empty?(move) }
     end
 
     moves

@@ -43,4 +43,49 @@ describe Pawn do
       expect(Pawn.name).to equal(Pawn.white.name)
     end
   end
+
+  describe '#attack_cells' do
+    it 'returns 2 attack cells when placed somewhere in the middle of the chessboard' do
+      attack_cells = Pawn.white.attack_cells(ChessPosition.from_s('d2'), Chessboard.new)
+      expect(attack_cells.size).to eql(2)
+    end
+
+    it 'returns 1 attack cells when placed near the edge of the chessboard' do
+      attack_cells = Pawn.white.attack_cells(ChessPosition.from_s('a7'), Chessboard.new)
+      expect(attack_cells.size).to eql(1)
+    end
+
+    it 'returns 0 attack cells when placed near the top of the chessboard' do
+      attack_cells = Pawn.white.attack_cells(ChessPosition.from_s('f8'), Chessboard.new)
+      expect(attack_cells.size).to eql(0)
+    end
+  end
+
+  describe '#available_moves' do
+    it 'returns 2 moves from start position' do
+      moves = Pawn.white.available_moves(ChessPosition.from_s('e2'), Chessboard.new)
+      expect(moves.size).to eql(2)
+    end
+
+    it 'returns 1 moves from start position when blocked at 4th row' do
+      cb = Chessboard.new
+      cb.place_chess_piece(Pawn.white, ChessPosition.from_s('b4'))
+      moves = Pawn.white.available_moves(ChessPosition.from_s('b2'), cb)
+      expect(moves.size).to eql(1)
+    end
+
+    it 'returns 0 moves from start position when blocked at 3th row' do
+      cb = Chessboard.new
+      cb.place_chess_piece(Pawn.white, ChessPosition.from_s('g3'))
+      moves = Pawn.white.available_moves(ChessPosition.from_s('g2'), cb)
+      expect(moves.size).to eql(0)
+    end
+
+    it 'returns 3 from start position when can capture' do
+      cb = Chessboard.new
+      cb.place_chess_piece(Pawn.black, ChessPosition.from_s('b3'))
+      moves = Pawn.white.available_moves(ChessPosition.from_s('c2'), cb)
+      expect(moves.size).to eql(3)
+    end
+  end
 end
