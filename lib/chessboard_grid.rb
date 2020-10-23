@@ -30,6 +30,12 @@ class ChessboardGrid
     self[pos].nil?
   end
 
+  def cell_under_attack?(check_cell, by_color)
+    each_chess_piece_with_pos.any? do |chess_piece, pos|
+      chess_piece.color == by_color && chess_piece.attack_cells(pos, self).include?(check_cell)
+    end
+  end
+
   def each_chess_piece
     return to_enum(:each_chess_piece) unless block_given?
     @board.each { |cell| yield(cell) unless cell.nil? }
