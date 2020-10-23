@@ -12,7 +12,7 @@ class Pawn < ChessPiece
     end
   end
 
-  def attack_cells(from, chessboard)
+  def attack_cells(from, _cb_grid)
     if color == :white
       attack_cells_direction(from, 1)
     else

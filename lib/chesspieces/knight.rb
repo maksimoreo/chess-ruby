@@ -12,7 +12,7 @@ class Knight < ChessPiece
     @default_moves
   end
 
-  def attack_cells(from, chessboard)
+  def attack_cells(from, _cb_grid)
     Knight.default_moves
       .map { |direction| from + direction }
       .reject { |move| move.nil? }

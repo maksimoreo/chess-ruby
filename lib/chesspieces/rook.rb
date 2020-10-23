@@ -4,7 +4,7 @@ require_relative '../directional_moves'
 class Rook < ChessPiece
   include AxisAlignedMoves
 
-  def attack_cells(from, chessboard)
-    attack_cells_axis_aligned(from, chessboard.grid)
+  def attack_cells(from, cb_grid)
+    attack_cells_axis_aligned(from, cb_grid)
   end
 end

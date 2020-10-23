@@ -14,7 +14,7 @@ class King < ChessPiece
   end
 
   # King always attacks 8 cells around it (5 if on the edge, 3 if in the corner)
-  def attack_cells(from, _chessboard)
+  def attack_cells(from, _cb_grid)
     moves = (DiagonalMoves.directions + AxisAlignedMoves.directions)
       .reject { |move| (from + move).nil? }
   end

@@ -25,13 +25,13 @@ class ChessPiece
 
   # Returns array of ChessPositions where the chess piece can go from current position
   def available_moves(from, chessboard)
-    attack_cells(from, chessboard).select { |move| chessboard.grid.can_move_or_take?(move, color)}
+    attack_cells(from, chessboard.grid).select { |move| chessboard.grid.can_move_or_take?(move, color)}
   end
 
   # Chess pieces attack other pieces of the same color, but cannot move there
   # (pawn attacks side cells, but doesn't attack forward cell)
   # (king can attack cells that are under attack, but can't move there)
-  def attack_cells(_from, _chessboard)
+  def attack_cells(_from, _cb_grid)
     []
   end
 
