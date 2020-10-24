@@ -1,3 +1,6 @@
+require_relative 'chess_position'
+require_relative 'chesspieces/chesspiece'
+require_relative 'chesspieces/king'
 
 # Container of 64 spaces for chess pieces
 # Allows indexing by ChessPosition object
@@ -30,6 +33,11 @@ class ChessboardGrid
     self[pos].nil?
   end
 
+  def check?(color)
+    king_pos = find_pos(King, color)
+    cell_under_attack?(king_pos, ChessPiece.opposite_color(color))
+  end
+
   def cell_under_attack?(check_cell, by_color)
     each_chess_piece_with_pos.any? do |chess_piece, pos|
       chess_piece.color == by_color && chess_piece.attack_cells(pos, self).include?(check_cell)
@@ -46,5 +54,12 @@ class ChessboardGrid
     @board.each_with_index do | cell, index |
       yield(cell, ChessPosition.from_i(index)) unless cell.nil?
     end
+  end
+
+  def find_pos(chess_piece_class, color = nil)
+    index = @board.find_index do |cell|
+      !cell.nil? && cell.class == chess_piece_class && (color.nil? || cell.color == color)
+    end
+    index.nil? ? nil : ChessPosition.from_i(index)
   end
 end
