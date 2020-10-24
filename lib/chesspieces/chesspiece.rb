@@ -27,7 +27,20 @@ class ChessPiece
     self.class.name
   end
 
+  # TODO: this function
+  # Returns array of ChessPositions where the chess piece can move from specified position
+  # This function discards moves that result in check
+  def allowed_moves(from, chessboard)
+    available_moves(from, chessboard).reject do |move|
+      # copy chessboard
+      # perform the move on a temporary chessboard
+      # see if it results in check
+      # if yes reject this move
+    end
+  end
+
   # Returns array of ChessPositions where the chess piece can go from current position
+  # Doesn't check if king will be under attack after any of these moves
   def available_moves(from, chessboard)
     attack_cells(from, chessboard.grid).select { |move| chessboard.grid.can_move_or_take?(move, color)}
   end

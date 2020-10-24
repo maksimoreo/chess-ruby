@@ -3,14 +3,20 @@ require_relative '../directional_moves'
 
 class King < ChessPiece
   def available_moves(from, chessboard)
-    moves = attack_cells(from, chessboard).select do |cell|
-      chessboard.grid.can_move_or_take?(cell, color)
-      # TODO: also check if cell is not under attack
+    cb_grid = chessboard.grid
+    moves = attack_cells(from, cb_grid).select do |cell|
+      cb_grid.can_move_or_take?(cell, color)
     end
 
     # TODO: castlings
 
     moves
+  end
+
+  # TODO: this function
+  def allowed_moves(from, chessboard)
+    super
+    # Check if castlings are available (see castrling rules)
   end
 
   # King always attacks 8 cells around it (5 if on the edge, 3 if in the corner)
