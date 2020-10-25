@@ -11,27 +11,6 @@ class Chessboard
   # Creates an empty chessboard
   def initialize
     @grid = ChessboardGrid.new
-
-    @info = {
-      white: {
-        king_position: ChessPosition.from_s('e1'),
-        castling: {
-          queenside: true, kingside: true
-        }
-      },
-      black: {
-        king_position: ChessPosition.from_s('e8'),
-        castling: {
-          queenside: true, kingside: true
-        }
-      }
-    }
-
-    @white_king_position = ChessPosition.from_s('e1')
-    @black_king_position = ChessPosition.from_s('e8')
-
-    @white_castling = { queenside: true, kingside: true }
-    @black_castling = { queenside: true, kingside: true }
   end
 
   # Returns chess piece or nil if cell is empty

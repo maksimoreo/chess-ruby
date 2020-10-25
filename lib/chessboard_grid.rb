@@ -5,11 +5,32 @@ require_relative 'chesspieces/king'
 # Container of 64 spaces for chess pieces
 # Allows indexing by ChessPosition object
 class ChessboardGrid
+  protected
+
   attr_reader :board
+
+  public
+
+  attr_reader :info
 
   # Creates an empty chess board
   def initialize
     @board = Array.new(64)
+
+    @info = {
+      white: {
+        king_position: ChessPosition.from_s('e1'),
+        castling: {
+          queenside: true, kingside: true
+        }
+      },
+      black: {
+        king_position: ChessPosition.from_s('e8'),
+        castling: {
+          queenside: true, kingside: true
+        }
+      }
+    }
   end
 
   def initialize_copy(original)
@@ -17,6 +38,10 @@ class ChessboardGrid
   end
 
   def ==(other)
+    @board == other.board && @info == other.info
+  end
+
+  def board_eq?(other)
     @board == other.board
   end
 

@@ -28,5 +28,6 @@ class King < ChessPiece
   def move(from, to, chessboard)
     super
     # TODO: check if castling is possible (see castling rules)
+    # TODO: update king position and castling info in cb_grid
   end
 end

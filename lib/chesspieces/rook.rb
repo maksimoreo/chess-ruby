@@ -7,4 +7,9 @@ class Rook < ChessPiece
   def attack_cells(from, cb_grid)
     attack_cells_axis_aligned(from, cb_grid)
   end
+
+  def move(from, to, chessboard)
+    super
+    # TODO: update and castling info in cb_grid
+  end
 end
