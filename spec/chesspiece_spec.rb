@@ -13,9 +13,9 @@ describe ChessPiece do
 
     it 'returns 0 moves' do
       cb = Chessboard.new
-      cb.place_chess_piece(King.white, ChessPosition.from_s('b2'))
-      cb.place_chess_piece(Pawn.white, ChessPosition.from_s('d2'))
-      cb.place_chess_piece(Rook.black, ChessPosition.from_s('g2'))
+      cb[ChessPosition.from_s('b2')] = King.white
+      cb[ChessPosition.from_s('d2')] = Pawn.white
+      cb[ChessPosition.from_s('g2')] = Rook.black
 
       moves = Pawn.white.allowed_moves(ChessPosition.from_s('d2'), cb)
 

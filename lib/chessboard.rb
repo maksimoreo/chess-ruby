@@ -1,64 +1,98 @@
-# frozen_string_literal: true
-
-require_relative 'chessboard_grid'
 require_relative 'chess_position'
+require_relative 'chesspieces/chesspiece'
+require_relative 'chesspieces/king'
 
-# Holds information about chess game
-# (chessboard, history, castlings)
+# Container of 64 spaces for chess pieces
+# Allows indexing by ChessPosition object
 class Chessboard
-  attr_reader :grid
+  protected
 
-  # Creates an empty chessboard
+  attr_reader :board
+
+  public
+
+  attr_reader :info
+
+  # Creates an empty chess board
   def initialize
-    @grid = ChessboardGrid.new
+    @board = Array.new(64)
+
+    @info = {
+      white: {
+        king_position: ChessPosition.from_s('e1'),
+        castling: {
+          queenside: true, kingside: true
+        }
+      },
+      black: {
+        king_position: ChessPosition.from_s('e8'),
+        castling: {
+          queenside: true, kingside: true
+        }
+      }
+    }
   end
 
-  # Returns chess piece or nil if cell is empty
-  def chess_piece_at(position)
-    raise 'expected ChessPosition object' unless position.is_a?(ChessPosition)
-
-    @grid[position]
+  def initialize_copy(original)
+    @board = original.board.dup
   end
 
-  # Places chess piece at specified position
-  def place_chess_piece(chess_piece, position)
-    unless chess_piece.class.ancestors.include?(ChessPiece)
-      raise 'only ChessPiece objects or derived objects can be placed on ChessBoard'
-    end
-    raise 'expected ChessPosition object' unless position.is_a?(ChessPosition)
-    raise 'cell is not empty' unless @grid[position].nil?
-
-    @grid[position] = chess_piece
+  def ==(other)
+    @board == other.board && @info == other.info
   end
 
-  # Calls #move() method on a chess piece at 'from' position
-  def move(from_pos, to_pos)
-    chess_piece = @grid[from_pos]
-
-    raise 'move from is empty' if chess_piece.nil?
-
-    # Chess piece moves by its own rules
-    move_was_performed = chess_piece.move(from_pos, to_pos, self)
-
-    # Return indicator that move was performed
-    move_was_performed
+  def board_eq?(other)
+    @board == other.board
   end
 
-  def available_moves(color)
-    # all_available_moves = []
-    # for each piece _p on the board
-    #   if _color == _p.color
-    #     _moves = get available moves
-    #     for each move _move in _moves
-    #       _new_board = try perform the move _move
-    #       unless _new_board.is_check?(color)
-    #         all_available_moves << _move
-    # return all_available_moves
+  def [](position)
+    @board[position.i * 8 + position.j]
+  end
+
+  def []=(position, object)
+    @board[position.i * 8 + position.j] = object
+  end
+
+  def move(from, to)
+    self[to] = self[from]
+    self[from] = nil
+  end
+
+  def can_move_or_take?(pos, color)
+    self[pos].nil? || self[pos].color != color
+  end
+
+  def cell_empty?(pos)
+    self[pos].nil?
   end
 
   def check?(color)
-    @grid.each_chess_piece_with_pos.any? do | chess_piece, cpos |
-      chess_piece.available_moves(cpos, self).include?(@info[color][:king_pos])
+    king_pos = find_pos(King, color)
+    cell_under_attack?(king_pos, ChessPiece.opposite_color(color))
+  end
+
+  def cell_under_attack?(check_cell, by_color)
+    each_chess_piece_with_pos.any? do |chess_piece, pos|
+      chess_piece.color == by_color && chess_piece.attack_cells(pos, self).include?(check_cell)
     end
+  end
+
+  def each_chess_piece
+    return to_enum(:each_chess_piece) unless block_given?
+    @board.each { |cell| yield(cell) unless cell.nil? }
+  end
+
+  def each_chess_piece_with_pos
+    return to_enum(:each_chess_piece_with_pos) unless block_given?
+    @board.each_with_index do | cell, index |
+      yield(cell, ChessPosition.from_i(index)) unless cell.nil?
+    end
+  end
+
+  def find_pos(chess_piece_class, color = nil)
+    index = @board.find_index do |cell|
+      !cell.nil? && cell.class == chess_piece_class && (color.nil? || cell.color == color)
+    end
+    index.nil? ? nil : ChessPosition.from_i(index)
   end
 end

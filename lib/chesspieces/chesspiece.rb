@@ -38,14 +38,14 @@ class ChessPiece
       move(from, to, chessboard)
 
       # reject moves that result in check
-      chessboard.grid.check?(color)
+      chessboard.check?(color)
     end
   end
 
   # Returns array of ChessPositions where the chess piece can go from current position
   # Doesn't check if king will be under attack after any of these moves
   def available_moves(from, chessboard)
-    attack_cells(from, chessboard.grid).select { |move| chessboard.grid.can_move_or_take?(move, color)}
+    attack_cells(from, chessboard).select { |move| chessboard.can_move_or_take?(move, color)}
   end
 
   # Chess pieces attack other pieces of the same color, but cannot move there
@@ -65,6 +65,6 @@ class ChessPiece
   # Moves ChessPiece on a given chessboard.
   # Derived class may override this behavior (pawn promotion, castling)
   def move(from, to, chessboard)
-    chessboard.grid.move(from, to)
+    chessboard.move(from, to)
   end
 end

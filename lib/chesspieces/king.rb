@@ -3,9 +3,8 @@ require_relative '../directional_moves'
 
 class King < ChessPiece
   def available_moves(from, chessboard)
-    cb_grid = chessboard.grid
-    moves = attack_cells(from, cb_grid).select do |cell|
-      cb_grid.can_move_or_take?(cell, color)
+    moves = attack_cells(from, chessboard).select do |cell|
+      chessboard.can_move_or_take?(cell, color)
     end
 
     # TODO: castlings
@@ -28,6 +27,6 @@ class King < ChessPiece
   def move(from, to, chessboard)
     super
     # TODO: check if castling is possible (see castling rules)
-    # TODO: update king position and castling info in cb_grid
+    # TODO: update king position and castling info in chessboard
   end
 end

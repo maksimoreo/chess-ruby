@@ -15,32 +15,32 @@ describe Queen do
 
     it 'returns 4 moves' do
       cb = Chessboard.new
-      cb.place_chess_piece(Queen.white, ChessPosition.from_s('a3'))
-      cb.place_chess_piece(Queen.white, ChessPosition.from_s('b1'))
-      cb.place_chess_piece(Queen.white, ChessPosition.from_s('b2'))
+      cb[ChessPosition.from_s('a3')] = Queen.white
+      cb[ChessPosition.from_s('b1')] = Queen.white
+      cb[ChessPosition.from_s('b2')] = Queen.white
       moves = Queen.black.available_moves(ChessPosition.from_s('a1'), cb)
       expect(moves.size).to eql(4)
     end
 
     it 'returns 1 move' do
       cb = Chessboard.new
-      cb.place_chess_piece(Queen.black, ChessPosition.from_s('d3'))
-      cb.place_chess_piece(Queen.white, ChessPosition.from_s('d5'))
-      cb.place_chess_piece(Queen.white, ChessPosition.from_s('c4'))
-      cb.place_chess_piece(Queen.white, ChessPosition.from_s('e4'))
-      cb.place_chess_piece(Queen.white, ChessPosition.from_s('e5'))
-      cb.place_chess_piece(Queen.white, ChessPosition.from_s('e3'))
-      cb.place_chess_piece(Queen.white, ChessPosition.from_s('c5'))
-      cb.place_chess_piece(Queen.white, ChessPosition.from_s('c3'))
+      cb[ChessPosition.from_s('d3')] = Queen.black
+      cb[ChessPosition.from_s('d5')] = Queen.white
+      cb[ChessPosition.from_s('c4')] = Queen.white
+      cb[ChessPosition.from_s('e4')] = Queen.white
+      cb[ChessPosition.from_s('e5')] = Queen.white
+      cb[ChessPosition.from_s('e3')] = Queen.white
+      cb[ChessPosition.from_s('c5')] = Queen.white
+      cb[ChessPosition.from_s('c3')] = Queen.white
       moves = Queen.white.available_moves(ChessPosition.from_s('d4'), cb)
       expect(moves.size).to eql(1)
     end
 
     it 'returns 0 moves (empty array)' do
       cb = Chessboard.new
-      cb.place_chess_piece(Queen.white, ChessPosition.from_s('a2'))
-      cb.place_chess_piece(Queen.white, ChessPosition.from_s('b2'))
-      cb.place_chess_piece(Queen.white, ChessPosition.from_s('b1'))
+      cb[ChessPosition.from_s('a2')] = Queen.white
+      cb[ChessPosition.from_s('b2')] = Queen.white
+      cb[ChessPosition.from_s('b1')] = Queen.white
       moves = Queen.white.available_moves(ChessPosition.from_s('a1'), cb)
       expect(moves.size).to eql(0)
     end

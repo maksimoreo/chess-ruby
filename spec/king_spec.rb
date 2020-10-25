@@ -16,26 +16,26 @@ describe King do
 
     it 'returns 3 moves' do
       cb = Chessboard.new
-      cb.place_chess_piece(Knight.white, ChessPosition.from_s('a2'))
-      cb.place_chess_piece(Knight.white, ChessPosition.from_s('b1'))
+      cb[ChessPosition.from_s('a2')] = Knight.white
+      cb[ChessPosition.from_s('b1')] = Knight.white
       moves = King.black.available_moves(ChessPosition.from_s('a1'), cb)
       expect(moves.size).to eql(3)
     end
 
     it 'returns 1 move' do
       cb = Chessboard.new
-      cb.place_chess_piece(Knight.white, ChessPosition.from_s('a2'))
-      cb.place_chess_piece(Knight.black, ChessPosition.from_s('b1'))
-      cb.place_chess_piece(Knight.black, ChessPosition.from_s('b2'))
+      cb[ChessPosition.from_s('a2')] = Knight.white
+      cb[ChessPosition.from_s('b1')] = Knight.black
+      cb[ChessPosition.from_s('b2')] = Knight.black
       moves = King.black.available_moves(ChessPosition.from_s('a1'), cb)
       expect(moves.size).to eql(1)
     end
 
     it 'returns 0 moves' do
       cb = Chessboard.new
-      cb.place_chess_piece(Knight.black, ChessPosition.from_s('a2'))
-      cb.place_chess_piece(Knight.black, ChessPosition.from_s('b1'))
-      cb.place_chess_piece(Knight.black, ChessPosition.from_s('b2'))
+      cb[ChessPosition.from_s('a2')] = Knight.black
+      cb[ChessPosition.from_s('b1')] = Knight.black
+      cb[ChessPosition.from_s('b2')] = Knight.black
       moves = King.black.available_moves(ChessPosition.from_s('a1'), cb)
       expect(moves.size).to eql(0)
     end

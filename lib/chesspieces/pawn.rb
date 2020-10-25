@@ -6,13 +6,13 @@ require_relative 'chesspiece'
 class Pawn < ChessPiece
   def available_moves(from, chessboard)
     if color == :white
-      available_moves_white(from, chessboard.grid)
+      available_moves_white(from, chessboard)
     else
-      available_moves_black(from, chessboard.grid)
+      available_moves_black(from, chessboard)
     end
   end
 
-  def attack_cells(from, _cb_grid)
+  def attack_cells(from, _chessboard)
     if color == :white
       attack_cells_direction(from, 1)
     else
@@ -39,47 +39,47 @@ class Pawn < ChessPiece
     end
   end
 
-  def available_moves_white(from, cb_grid)
+  def available_moves_white(from, chessboard)
     moves = []
 
     # no moves available if pawn is at the top (*8)
     unless from.i == 7
 
       # move up is available if nothing is blocking it
-      if cb_grid.cell_empty?(from.up)
+      if chessboard.cell_empty?(from.up)
         moves << from.up
 
         # move two spaces up from start position (*2) if nothing is blocking
-        if from.i == 1 && cb_grid.cell_empty?(from.up(2))
+        if from.i == 1 && chessboard.cell_empty?(from.up(2))
           moves << from.up(2)
         end
       end
 
       # capture if cell isn't empty
-      moves += attack_cells_direction(from, 1).reject { |move| cb_grid.cell_empty?(move) }
+      moves += attack_cells_direction(from, 1).reject { |move| chessboard.cell_empty?(move) }
     end
 
     moves
   end
 
-  def available_moves_black(from, cb_grid)
+  def available_moves_black(from, chessboard)
     moves = []
 
     # no moves available if pawn is at the bottom (*1)
     unless from.i == 0
 
       # move down is available if nothing is blocking it
-      if cb_grid.cell_empty?(from.down)
+      if chessboard.cell_empty?(from.down)
         moves << from.down
 
         # move two spaces down from start position (*7) if nothing is blocking
-        if from.i == 6 && cb_grid.cell_empty?(from.down(2))
+        if from.i == 6 && chessboard.cell_empty?(from.down(2))
           moves << from.down(2)
         end
       end
 
       # capture if cell isn't empty
-      moves += attack_cells_direction(from, -1).reject { |move| cb_grid.cell_empty?(move) }
+      moves += attack_cells_direction(from, -1).reject { |move| chessboard.cell_empty?(move) }
     end
 
     moves

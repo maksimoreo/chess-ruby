@@ -4,7 +4,7 @@ require_relative '../directional_moves'
 class Bishop < ChessPiece
   include DiagonalMoves
 
-  def attack_cells(from, cb_grid)
-    attack_cells_diagonal(from, cb_grid)
+  def attack_cells(from, chessboard)
+    attack_cells_diagonal(from, chessboard)
   end
 end
