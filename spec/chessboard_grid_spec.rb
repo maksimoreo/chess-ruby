@@ -63,4 +63,42 @@ describe ChessboardGrid do
       expect(grid.check?(:white)).to eql(false)
     end
   end
+
+  describe '#==' do
+    it 'returns true if two different ChessboardGrid objects contain same chess piece pattern' do
+      grid1 = ChessboardGrid.new
+      grid1[ChessPosition.from_s('e1')] = King.white
+      grid1[ChessPosition.from_s('b6')] = Queen.black
+
+      grid2 = ChessboardGrid.new
+      grid2[ChessPosition.from_s('e1')] = King.white
+      grid2[ChessPosition.from_s('b6')] = Queen.black
+
+      expect(grid1).to eq(grid2)
+    end
+
+    it 'returns false if two different ChessboardGrid objects contain different chess piece patterns' do
+      grid1 = ChessboardGrid.new
+      grid1[ChessPosition.from_s('e1')] = King.white
+      grid1[ChessPosition.from_s('b6')] = Queen.white
+
+      grid2 = ChessboardGrid.new
+      grid2[ChessPosition.from_s('e1')] = King.white
+      grid2[ChessPosition.from_s('b6')] = Queen.black
+
+      expect(grid1 == grid2).to eq(false)
+    end
+  end
+
+  describe '#copy' do
+    it 'returns a copy of the ChessboardGrid object' do
+      grid1 = ChessboardGrid.new
+      grid1[ChessPosition.from_s('a5')] = King.black
+      grid1[ChessPosition.from_s('g2')] = Queen.white
+
+      grid2 = grid1.clone
+
+      expect(grid1).to eq(grid2)
+    end
+  end
 end

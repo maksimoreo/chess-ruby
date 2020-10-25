@@ -12,6 +12,14 @@ class ChessboardGrid
     @board = Array.new(64)
   end
 
+  def initialize_copy(original)
+    @board = original.board.dup
+  end
+
+  def ==(other)
+    @board == other.board
+  end
+
   def [](position)
     @board[position.i * 8 + position.j]
   end
