@@ -27,15 +27,18 @@ class ChessPiece
     self.class.name
   end
 
-  # TODO: this function
   # Returns array of ChessPositions where the chess piece can move from specified position
   # This function discards moves that result in check
   def allowed_moves(from, chessboard)
-    available_moves(from, chessboard).reject do |move|
+    available_moves(from, chessboard).reject do |to|
       # copy chessboard
+      temp_chessboard = chessboard.clone
+
       # perform the move on a temporary chessboard
-      # see if it results in check
-      # if yes reject this move
+      move(from, to, chessboard)
+
+      # reject moves that result in check
+      chessboard.grid.check?(color)
     end
   end
 
@@ -52,11 +55,16 @@ class ChessPiece
     []
   end
 
-  # Moves ChessPiece from _from to _to on chessboard.
+  # This function check if move is allowed
+  def try_move(from, to, chessboard)
+    move_is_allowed = allowed_moves(from, chessboard).include?(to)
+    move(from, to, chessboard) if move_is_allowed
+    move_is_allowed
+  end
+
+  # Moves ChessPiece on a given chessboard.
   # Derived class may override this behavior (pawn promotion, castling)
   def move(from, to, chessboard)
-    move_is_allowed = available_moves(from, chessboard).include?(to)
-    chessboard.grid.move(from, to) if move_is_allowed
-    move_is_allowed
+    chessboard.grid.move(from, to)
   end
 end
