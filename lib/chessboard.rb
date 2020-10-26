@@ -53,9 +53,13 @@ class Chessboard
     @board[position.i * 8 + position.j] = object
   end
 
-  def move(from, to)
+  def reposition(from, to)
     self[to] = self[from]
     self[from] = nil
+  end
+
+  def move(from, to)
+    self[from].move(from, to, self)
   end
 
   def can_move_or_take?(pos, color)

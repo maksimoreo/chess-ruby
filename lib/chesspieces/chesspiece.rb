@@ -65,6 +65,6 @@ class ChessPiece
   # Moves ChessPiece on a given chessboard.
   # Derived class may override this behavior (pawn promotion, castling)
   def move(from, to, chessboard)
-    chessboard.move(from, to)
+    chessboard.reposition(from, to)
   end
 end
