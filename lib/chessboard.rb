@@ -95,4 +95,12 @@ class Chessboard
     end
     index.nil? ? nil : ChessPosition.from_i(index)
   end
+
+  def attack_cells_from(pos)
+    self[pos].attack_cells(pos, self)
+  end
+
+  def allowed_moves_from(pos)
+    self[pos].allowed_moves(pos, self)
+  end
 end

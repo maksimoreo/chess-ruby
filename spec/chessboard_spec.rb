@@ -101,4 +101,30 @@ describe Chessboard do
       expect(grid1).to eq(grid2)
     end
   end
+
+  describe '#attack_cells_from' do
+    it 'returns the same array as ChessPiece#attack_cells' do
+      cb = Chessboard.new
+      cpos = ChessPosition.from_s('e2')
+      cb[cpos] = Pawn.white
+
+      moves1 = cb.attack_cells_from(cpos)
+      moves2 = Pawn.white.attack_cells(cpos, cb)
+
+      expect(moves1).to eql(moves2)
+    end
+  end
+
+  describe '#allowed_moves_from' do
+    it 'returns the same array as ChessPiece#allowed_moves' do
+      cb = Chessboard.new
+      cpos = ChessPosition.from_s('e7')
+      cb[cpos] = Pawn.black
+
+      moves1 = cb.attack_cells_from(cpos)
+      moves2 = Pawn.black.attack_cells(cpos, cb)
+
+      expect(moves1).to eql(moves2)
+    end
+  end
 end
