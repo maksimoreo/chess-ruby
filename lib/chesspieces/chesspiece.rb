@@ -35,10 +35,10 @@ class ChessPiece
       temp_chessboard = chessboard.clone
 
       # perform the move on a temporary chessboard
-      move(from, to, chessboard)
+      move(from, to, temp_chessboard)
 
       # reject moves that result in check
-      chessboard.check?(color)
+      temp_chessboard.check?(color)
     end
   end
 
