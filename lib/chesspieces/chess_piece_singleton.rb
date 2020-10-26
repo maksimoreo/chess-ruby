@@ -15,4 +15,14 @@ module ChessPieceSingleton
     end
     @black
   end
+
+  def [](color)
+    if color == :white
+      white
+    elsif color == :black
+      black
+    else
+      nil
+    end
+  end
 end
