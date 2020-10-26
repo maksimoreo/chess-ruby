@@ -1,5 +1,7 @@
 require './lib/chesspieces/king'
 require './lib/chesspieces/knight'
+require './lib/chesspieces/rook'
+require './lib/chesspieces/bishop'
 require './lib/chessboard'
 
 describe King do
@@ -39,5 +41,77 @@ describe King do
       moves = King.black.available_moves(ChessPosition.from_s('a1'), cb)
       expect(moves.size).to eql(0)
     end
+  end
+
+  describe '#allowed_moves' do
+    it "doesn't allow to move on cells that are under attack" do
+      cb = Chessboard.new
+      cb[ChessPosition.from_s('e8')] = Rook.black
+      cb[ChessPosition.from_s('d4')] = King.white
+      moves = King.white.allowed_moves(ChessPosition.from_s('d4'), cb)
+      expect(moves.size).to eql(5)
+    end
+
+    it 'allows queenside castling' do
+      cb = Chessboard.new
+      king_pos = ChessPosition.from_s('e1')
+
+      cb[king_pos] = King.white
+      cb[ChessPosition.from_s('a1')] = Rook.white
+
+      moves = cb.allowed_moves_from(king_pos)
+      expect(moves.size).to eql(6)
+      expect(moves).to include(ChessPosition.from_s('c1'))
+    end
+
+    it "doesn't allow queenside castling when king is under attack" do
+      cb = Chessboard.new
+      king_pos = ChessPosition.from_s('e1')
+
+      cb[king_pos] = King.white
+      cb[ChessPosition.from_s('a1')] = Rook.white
+      cb[ChessPosition.from_s('e8')] = Rook.black
+
+      moves = cb.allowed_moves_from(king_pos)
+      expect(moves.size).to eql(4)
+      expect(moves).not_to include(ChessPosition.from_s('c1'))
+    end
+
+    it "doesn't allow kingside castling when cells between king and king's destination are under attack" do
+      cb = Chessboard.new
+      king_pos = ChessPosition.from_s('e1')
+
+      cb[king_pos] = King.white
+      cb[ChessPosition.from_s('h1')] = Rook.white
+      cb[ChessPosition.from_s('g3')] = Knight.black
+
+      moves = cb.allowed_moves_from(king_pos)
+      expect(moves.size).to eql(3)
+      expect(moves).not_to include(ChessPosition.from_s('g1'))
+    end
+
+    it "doesn't allow castling if there are pieces between king and rook" do
+      cb = Chessboard.new
+      king_pos = ChessPosition.from_s('e8')
+
+      cb[king_pos] = King.black
+      cb[ChessPosition.from_s('a8')] = Rook.black
+      cb[ChessPosition.from_s('b8')] = Bishop.white
+
+      moves = cb.allowed_moves_from(king_pos)
+      expect(moves.size).to eql(5)
+      expect(moves).not_to include(ChessPosition.from_s('c8'))
+    end
+
+    # TODO:
+    # for white and black:
+    #   for queen side and king side:
+    #     castling is not available if there are pieces between king and rook
+    #     castling is not available due to check in destination
+    #     castling is not available due to check in between
+    #     castling is not available due to check in king position
+    #     castling is not available due to obsence of rook
+    #     castling is not available if rook is at its start position, but moved previously
+    #     castling is not available if king is at its start position, but moved previously
   end
 end
