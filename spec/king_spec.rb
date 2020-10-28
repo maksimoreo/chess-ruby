@@ -126,4 +126,32 @@ describe King do
     #     castling is not available if rook is at its start position, but moved previously
     #     castling is not available if king is at its start position, but moved previously
   end
+
+  describe '#move' do
+    it 'performs kingside castling correctly' do
+      result_cb = Chessboard.new
+      result_cb[ChessPosition.from_s('g1')] = King.white
+      result_cb[ChessPosition.from_s('f1')] = Rook.white
+
+      cb = Chessboard.new
+      cb[ChessPosition.from_s('e1')] = King.white
+      cb[ChessPosition.from_s('h1')] = Rook.white
+      cb.move(ChessPosition.from_s('e1'), ChessPosition.from_s('g1'))
+
+      expect(cb.board_eq?(result_cb))
+    end
+
+    it 'performs queenside castling correctly' do
+      result_cb = Chessboard.new
+      result_cb[ChessPosition.from_s('c8')] = King.black
+      result_cb[ChessPosition.from_s('d8')] = Rook.black
+
+      cb = Chessboard.new
+      cb[ChessPosition.from_s('e8')] = King.black
+      cb[ChessPosition.from_s('a8')] = Rook.black
+      cb.move(ChessPosition.from_s('e8'), ChessPosition.from_s('c8'))
+
+      expect(cb.board_eq?(result_cb))
+    end
+  end
 end
