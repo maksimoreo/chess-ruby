@@ -47,6 +47,10 @@ class King < ChessPiece
         chessboard.reposition(ChessPosition.new(row, 7), ChessPosition.new(row, 5))
       end
     end
+
+    # disallow castling
+    chessboard.info[color][:castling][:queenside] = false
+    chessboard.info[color][:castling][:kingside] = false
   end
 
   private
@@ -65,8 +69,8 @@ class King < ChessPiece
     end
 
     if pos == ChessPosition.new(row, 4)
-      moves << ChessPosition.new(row, 2) if check.call(:queenside, 0, 1, 3, 2, 4)
-      moves << ChessPosition.new(row, 6) if check.call(:kingside, 7, 5, 6, 4, 6)
+      moves << ChessPosition.new(row, 2) if check.call(:queenside, 0, 1, 3)
+      moves << ChessPosition.new(row, 6) if check.call(:kingside, 7, 5, 6)
     end
 
     moves

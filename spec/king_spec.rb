@@ -115,16 +115,38 @@ describe King do
       expect(moves).not_to include(ChessPosition.from_s('c8'))
     end
 
-    # TODO:
-    # for white and black:
-    #   for queen side and king side:
-    #     castling is not available if there are pieces between king and rook
-    #     castling is not available due to check in destination
-    #     castling is not available due to check in between
-    #     castling is not available due to check in king position
-    #     castling is not available due to obsence of rook
-    #     castling is not available if rook is at its start position, but moved previously
-    #     castling is not available if king is at its start position, but moved previously
+    it "doesn't allow castling if king moved previously" do
+      cb = Chessboard.new
+      king_pos = ChessPosition.from_s('e8')
+
+      cb[king_pos] = King.black
+      cb[ChessPosition.from_s('h8')] = Rook.black
+
+      # move king
+      cb.move(king_pos, king_pos.down)
+      cb.move(king_pos.down, king_pos)
+
+      moves = cb.allowed_moves_from(king_pos)
+      expect(moves.size).to eql(5)
+      expect(moves).not_to include(ChessPosition.from_s('g8'))
+    end
+
+    it "doesn't allow castling if rook moved previously" do
+      cb = Chessboard.new
+      king_pos = ChessPosition.from_s('e1')
+      rook_pos = ChessPosition.from_s('a1')
+
+      cb[king_pos] = King.white
+      cb[rook_pos] = Rook.white
+
+      # move rook
+      cb.move(rook_pos, rook_pos.up(5))
+      cb.move(rook_pos.up(5), rook_pos)
+
+      moves = cb.allowed_moves_from(king_pos)
+      expect(moves.size).to eql(5)
+      expect(moves).not_to include(ChessPosition.from_s('c1'))
+    end
   end
 
   describe '#move' do

@@ -10,6 +10,18 @@ class Rook < ChessPiece
 
   def move(from, to, chessboard)
     super
-    # TODO: update and castling info in chessboard
+    update_castling_info(chessboard, from)
+  end
+
+  private
+
+  def update_castling_info(chessboard, pos)
+    if color == :white
+      chessboard.info[:white][:castling][:queenside] = false if pos == ChessPosition.from_s('a1')
+      chessboard.info[:white][:castling][:kingside] = false if pos == ChessPosition.from_s('h1')
+    elsif color == :black
+      chessboard.info[:black][:castling][:queenside] = false if pos == ChessPosition.from_s('a8')
+      chessboard.info[:black][:castling][:kingside] = false if pos == ChessPosition.from_s('h8')
+    end
   end
 end
