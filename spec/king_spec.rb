@@ -64,6 +64,18 @@ describe King do
       expect(moves).to include(ChessPosition.from_s('c1'))
     end
 
+    it 'allows kingside castling' do
+      cb = Chessboard.new
+      king_pos = ChessPosition.from_s('e8')
+
+      cb[king_pos] = King.black
+      cb[ChessPosition.from_s('h8')] = Rook.black
+
+      moves = cb.allowed_moves_from(king_pos)
+      expect(moves.size).to eql(6)
+      expect(moves).to include(ChessPosition.from_s('g8'))
+    end
+
     it "doesn't allow queenside castling when king is under attack" do
       cb = Chessboard.new
       king_pos = ChessPosition.from_s('e1')
