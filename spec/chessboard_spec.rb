@@ -140,4 +140,12 @@ describe Chessboard do
       expect(moves1).to eql(moves2)
     end
   end
+
+  describe '#allowed_moves' do
+    it 'returns all moves for specified color' do
+      moves = Chessboard.default_chessboard.allowed_moves(:white)
+      expect(moves.keys.size).to eql(10) # 8 for pawns, 2 for knights
+      expect(moves.values.flatten.size).to eql(20) # 16 for pawns, 4 for knights
+    end
+  end
 end

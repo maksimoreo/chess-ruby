@@ -131,4 +131,17 @@ class Chessboard
   def allowed_moves_from(pos)
     self[pos].allowed_moves(pos, self)
   end
+
+  def allowed_moves(color)
+    @board.each_with_index.reduce({}) do |moves, (chess_piece, index)|
+      if !chess_piece.nil? && chess_piece.color == color
+        pos = ChessPosition.from_i(index)
+        additional_moves = chess_piece.allowed_moves(pos, self)
+        unless additional_moves.empty?
+          moves[pos] = additional_moves
+        end
+      end
+      moves
+    end
+  end
 end
