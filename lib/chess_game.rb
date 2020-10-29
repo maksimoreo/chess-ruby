@@ -6,9 +6,63 @@ require_relative 'chess_position'
 # Holds information about chess game
 # (chessboard, history, castlings)
 class ChessGame
+  class PlayerInfo
+    attr_reader :player, :color
+
+    def initialize(player, color, id)
+      @player = player
+      @color = color
+      @id = id
+    end
+
+    def move(chessboard)
+      @player.move(chessboard)
+    end
+  end
+
   # Creates an empty chessboard
-  def initialize
-    @chessboard = Chessboard.new
+  def initialize(player1, player2)
+    @chessboard = Chessboard.default_chessboard
+    @player1 = PlayerInfo.new(player1, :white, 1)
+    @player2 = PlayerInfo.new(player2, :black, 2)
+
+    @current_player = @player1
+    @state = :playing # :playing, :draw, :p1, :p2
+  end
+
+  def play
+    loop do
+      if @chessboard.allowed_moves(@current_player.color).empty?
+        if @chessboard.check?(@current_player.color)
+          @state = @current_player.id == 1 ? :p2 : :p1
+        else
+          @state = :draw
+        end
+
+        break
+      else
+        play_one_move
+      end
+    end
+
+    @state
+  end
+
+  def play_one_move
+    allowed_moves = @chessboard.allowed_moves(@current_player.color)
+
+    (1..5).each do |attempt_i|
+      move = @player1.move(@chessboard.clone)
+
+      # TODO: check if player wants a draw or to surrender
+
+      if allowed_moves.key?(move) && allowed_moves[move.from].include?(move.to)
+        @chessboard.move(move.from, move.to)
+        break
+      end
+    end
+
+    @current_player = @current_player.color == @player1.color ? @player2 : @player1
   end
 
   # Returns chess piece or nil if cell is empty
@@ -29,20 +83,7 @@ class ChessGame
     @chessboard[position] = chess_piece
   end
 
-  # Calls #move() method on a chess piece at 'from' position
-  def move(from_pos, to_pos)
-    chess_piece = @chessboard[from_pos]
-
-    raise 'move from is empty' if chess_piece.nil?
-
-    # Chess piece moves by its own rules
-    move_was_performed = chess_piece.move(from_pos, to_pos, @chessboard)
-
-    # Return indicator that move was performed
-    move_was_performed
-  end
-
-  def available_moves(color)
+  def allowed_moves(color)
     # all_available_moves = []
     # for each piece _p on the board
     #   if _color == _p.color
@@ -52,11 +93,5 @@ class ChessGame
     #       unless _new_board.is_check?(color)
     #         all_available_moves << _move
     # return all_available_moves
-  end
-
-  def check?(color)
-    @chessboard.each_chess_piece_with_pos.any? do | chess_piece, cpos |
-      chess_piece.available_moves(cpos, self).include?(@info[color][:king_pos])
-    end
   end
 end
