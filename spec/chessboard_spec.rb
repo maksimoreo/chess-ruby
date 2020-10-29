@@ -148,4 +148,24 @@ describe Chessboard do
       expect(moves.values.flatten.size).to eql(20) # 16 for pawns, 4 for knights
     end
   end
+
+  describe '#to_a' do
+    it 'returns one dimensional array' do
+      cb = Chessboard.default_chessboard
+      cb.to_a.each_with_index do |cell, index|
+        expect(cell == cb[ChessPosition.from_i(index)])
+      end
+    end
+  end
+
+  describe '#to_two_dimensional_array' do
+    it 'returns one dimensional array' do
+      cb = Chessboard.default_chessboard
+      cb.to_two_dimensional_array.each_with_index do |row, row_index|
+        row.each_with_index do |cell, column_index|
+          expect(cell == cb[ChessPosition.new(row_index, column_index)])
+        end
+      end
+    end
+  end
 end

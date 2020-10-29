@@ -61,6 +61,14 @@ class Chessboard
     @board = original.board.dup
   end
 
+  def to_a
+    @board.clone
+  end
+
+  def to_two_dimensional_array
+    Array.new(8) { |row| Array.new(8) { |column| @board[row * 8 + column] } }
+  end
+
   def ==(other)
     @board == other.board && @info == other.info
   end
