@@ -3,6 +3,19 @@ require './lib/chesspieces/pawn'
 require './lib/chesspieces/queen'
 
 describe Chessboard do
+  describe '.default_chessboard' do
+    it 'returns default chessboard' do
+      cb = Chessboard.default_chessboard
+
+      # Other chess pieces
+      [[0, :white], [7, :black]].each do |row, color|
+        [Rook, Knight, Bishop, Queen, King, Bishop, Knight, Rook].each_with_index do |chess_piece, column|
+          expect(cb[ChessPosition.new(row, column)] == chess_piece[color])
+        end
+      end
+    end
+  end
+
   describe '#[]' do
     it 'returns object at position' do
       grid = Chessboard.new

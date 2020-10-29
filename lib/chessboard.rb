@@ -1,6 +1,11 @@
 require_relative 'chess_position'
 require_relative 'chesspieces/chesspiece'
 require_relative 'chesspieces/king'
+require_relative 'chesspieces/queen'
+require_relative 'chesspieces/rook'
+require_relative 'chesspieces/bishop'
+require_relative 'chesspieces/knight'
+require_relative 'chesspieces/pawn'
 
 # Container of 64 spaces for chess pieces
 # Allows indexing by ChessPosition object
@@ -12,6 +17,25 @@ class Chessboard
   public
 
   attr_reader :info
+
+  def self.default_chessboard
+    cb = Chessboard.new
+
+    # Pawns
+    (0..7).each do |j|
+      cb[ChessPosition.new(1, j)] = Pawn.white
+      cb[ChessPosition.new(6, j)] = Pawn.black
+    end
+
+    # Other chess pieces
+    [[0, :white], [7, :black]].each do |row, color|
+      [Rook, Knight, Bishop, Queen, King, Bishop, Knight, Rook].each_with_index do |chess_piece, column|
+        cb[ChessPosition.new(row, column)] = chess_piece[color]
+      end
+    end
+
+    cb
+  end
 
   # Creates an empty chess board
   def initialize
