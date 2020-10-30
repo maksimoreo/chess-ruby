@@ -57,7 +57,7 @@ class ChessGame
       # TODO: check if player wants a draw or to surrender
 
       if allowed_moves.key?(move[:from]) && allowed_moves[move[:from]].include?(move[:to])
-        @chessboard.move(move[:from], move[:to])
+        @chessboard.move(move)
         break
       end
     end

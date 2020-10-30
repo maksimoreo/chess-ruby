@@ -90,8 +90,8 @@ class Chessboard
     self[from] = nil
   end
 
-  def move(from, to)
-    self[from].move(from, to, self)
+  def move(chess_move)
+    self[chess_move[:from]].move(chess_move, self)
   end
 
   def can_move_or_take?(pos, color)

@@ -34,16 +34,16 @@ class King < ChessPiece
       .reject(&:nil?)
   end
 
-  def move(from, to, chessboard)
+  def move(chess_move, chessboard)
     # Move King
-    chessboard.reposition(from, to)
+    chessboard.reposition(chess_move[:from], chess_move[:to])
 
     # Move Rook if performing a castling
-    row = from.i
-    if from.j == 4 && (row == 0 || row == 7)
-      if to.j == 2 # Queenside
+    row = chess_move[:from].i
+    if chess_move[:from].j == 4 && (row == 0 || row == 7)
+      if chess_move[:to].j == 2 # Queenside
         chessboard.reposition(ChessPosition.new(row, 0), ChessPosition.new(row, 3))
-      elsif to.j == 6 # Kingside
+      elsif chess_move[:to].j == 6 # Kingside
         chessboard.reposition(ChessPosition.new(row, 7), ChessPosition.new(row, 5))
       end
     end

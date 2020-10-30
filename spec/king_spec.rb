@@ -123,8 +123,8 @@ describe King do
       cb[ChessPosition.from_s('h8')] = Rook.black
 
       # move king
-      cb.move(king_pos, king_pos.down)
-      cb.move(king_pos.down, king_pos)
+      cb.move({ from: king_pos, to: king_pos.down })
+      cb.move({ from: king_pos.down, to: king_pos })
 
       moves = cb.allowed_moves_from(king_pos)
       expect(moves.size).to eql(5)
@@ -140,8 +140,8 @@ describe King do
       cb[rook_pos] = Rook.white
 
       # move rook
-      cb.move(rook_pos, rook_pos.up(5))
-      cb.move(rook_pos.up(5), rook_pos)
+      cb.move({ from: rook_pos, to: rook_pos.up(5) })
+      cb.move({ from: rook_pos.up(5), to: rook_pos })
 
       moves = cb.allowed_moves_from(king_pos)
       expect(moves.size).to eql(5)
@@ -158,7 +158,7 @@ describe King do
       cb = Chessboard.new
       cb[ChessPosition.from_s('e1')] = King.white
       cb[ChessPosition.from_s('h1')] = Rook.white
-      cb.move(ChessPosition.from_s('e1'), ChessPosition.from_s('g1'))
+      cb.move({ from: ChessPosition.from_s('e1'), to: ChessPosition.from_s('g1') })
 
       expect(cb.board_eq?(result_cb))
     end
@@ -171,7 +171,7 @@ describe King do
       cb = Chessboard.new
       cb[ChessPosition.from_s('e8')] = King.black
       cb[ChessPosition.from_s('a8')] = Rook.black
-      cb.move(ChessPosition.from_s('e8'), ChessPosition.from_s('c8'))
+      cb.move({ from: ChessPosition.from_s('e8'), to: ChessPosition.from_s('c8') })
 
       expect(cb.board_eq?(result_cb))
     end

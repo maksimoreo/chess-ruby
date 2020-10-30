@@ -35,7 +35,7 @@ class ChessPiece
       temp_chessboard = chessboard.clone
 
       # perform the move on a temporary chessboard
-      move(from, to, temp_chessboard)
+      move({ from: from, to: to }, temp_chessboard)
 
       # reject moves that result in check
       temp_chessboard.check?(color)
@@ -56,15 +56,15 @@ class ChessPiece
   end
 
   # This function check if move is allowed
-  def try_move(from, to, chessboard)
-    move_is_allowed = allowed_moves(from, chessboard).include?(to)
-    move(from, to, chessboard) if move_is_allowed
+  def try_move(chess_move, chessboard)
+    move_is_allowed = allowed_moves(chess_move[:from], chessboard).include?(chess_move[:to])
+    move(chess_move, chessboard) if move_is_allowed
     move_is_allowed
   end
 
   # Moves ChessPiece on a given chessboard.
   # Derived class may override this behavior (pawn promotion, castling)
-  def move(from, to, chessboard)
-    chessboard.reposition(from, to)
+  def move(chess_move, chessboard)
+    chessboard.reposition(chess_move[:from], chess_move[:to])
   end
 end

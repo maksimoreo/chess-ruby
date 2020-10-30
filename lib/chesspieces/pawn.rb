@@ -27,14 +27,14 @@ class Pawn < ChessPiece
       .reject { |move| move.nil? }
   end
 
-  def move(from, to, chessboard)
+  def move(chess_move, chessboard)
     # Validate and perform move
     super
 
     # After move was performed check if pawn can be promoted
-    if color == :white && to.i == 7
+    if color == :white && chess_move[:to].i == 7
       # TODO: promote Pawn to Queen
-    elsif color == :black && to.j == 0
+    elsif color == :black && chess_move[:to].j == 0
       # TODO: promote Pawn to Queen
     end
   end
