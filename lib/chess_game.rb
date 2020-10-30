@@ -20,6 +20,8 @@ class ChessGame
     end
   end
 
+  attr_reader :state
+
   # Creates an empty chessboard
   def initialize(player1, player2)
     @chessboard = Chessboard.default_chessboard
@@ -63,5 +65,16 @@ class ChessGame
     end
 
     @current_player = @current_player.color == @player1.color ? @player2 : @player1
+  end
+
+  def winner
+    case @state
+    when :p1
+      @player1.player
+    when :p2
+      @player2.player
+    else
+      nil
+    end
   end
 end
