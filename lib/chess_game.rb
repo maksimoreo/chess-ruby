@@ -16,34 +16,41 @@ class ChessGame
     end
 
     def move(chessboard)
-      @player.move(chessboard)
+      @player.move(chessboard, @color)
     end
   end
 
   attr_reader :state
 
   # Creates an empty chessboard
-  def initialize(player1, player2)
+  def initialize(white_player, black_player)
     @chessboard = Chessboard.default_chessboard
-    @player1 = PlayerInfo.new(player1, :white, 1)
-    @player2 = PlayerInfo.new(player2, :black, 2)
+    @players = { white: white_player, black: black_player }
+    @current_color = :white
+    @state = :playing # :playing, :draw, :white, :black
+  end
 
-    @current_player = @player1
-    @state = :playing # :playing, :draw, :p1, :p2
+  def current_player
+    @players[@current_color]
+  end
+
+  def switch_player
+    @current_color = @current_color == :white ? :black : :white
   end
 
   def play
     loop do
-      if @chessboard.allowed_moves(@current_player.color).empty?
-        if @chessboard.check?(@current_player.color)
-          @state = @current_player.id == 1 ? :p2 : :p1
+      if @chessboard.allowed_moves(@current_color).empty?
+        if @chessboard.check?(@current_color)
+          @state = @current_color
         else
           @state = :draw
         end
 
         break
       else
-        play_one_move
+        puts "Now is #{current_player.name}'s turn"
+        break unless play_one_move
       end
     end
 
@@ -51,12 +58,13 @@ class ChessGame
   end
 
   def play_one_move
-    allowed_moves = @chessboard.allowed_moves(@current_player.color)
+    allowed_moves = @chessboard.allowed_moves(@current_color)
 
     (1..5).each do |attempt_i|
-      move = @player1.move(@chessboard.clone)
+      move = current_player.move(@chessboard.clone, @current_color)
 
       # TODO: check if player wants a draw or to surrender
+      return false if move[:surrender]
 
       if allowed_moves.key?(move[:from]) && allowed_moves[move[:from]].include?(move[:to])
         @chessboard.move(move)
@@ -64,7 +72,8 @@ class ChessGame
       end
     end
 
-    @current_player = @current_player.color == @player1.color ? @player2 : @player1
+    switch_player
+    true
   end
 
   def winner

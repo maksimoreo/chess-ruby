@@ -30,7 +30,8 @@ class HumanPlayer < Player
     super
   end
 
-  def move(chessboard)
+  def move(chessboard, color)
+    puts "It's your turn, #{name}! You play for: #{color}."
     HumanPlayer.print_chessboard(chessboard)
     ask_move
   end
