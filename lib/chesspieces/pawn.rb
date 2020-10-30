@@ -28,14 +28,11 @@ class Pawn < ChessPiece
   end
 
   def move(chess_move, chessboard)
-    # Validate and perform move
     super
 
     # After move was performed check if pawn can be promoted
-    if color == :white && chess_move[:to].i == 7
-      # TODO: promote Pawn to Queen
-    elsif color == :black && chess_move[:to].j == 0
-      # TODO: promote Pawn to Queen
+    if (color == :white && chess_move[:to].i == 7) || (color == :black && chess_move[:to].i == 0)
+      promote(chessboard, chess_move[:to], chess_move.fetch(:promote, :Queen))
     end
   end
 
@@ -83,5 +80,22 @@ class Pawn < ChessPiece
     end
 
     moves
+  end
+
+  private
+
+  def promote(chessboard, pos, promote_to)
+    case promote_to
+    when :Queen
+      chessboard[pos] = Queen[color]
+    when :Rook
+      chessboard[pos] = Rook[color]
+    when :Bishop
+      chessboard[pos] = Bishop[color]
+    when :Knight
+      chessboard[pos] = Knight[color]
+    else
+      chessboard[pos] = Queen[color]
+    end
   end
 end

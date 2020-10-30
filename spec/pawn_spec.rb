@@ -88,4 +88,78 @@ describe Pawn do
       expect(moves.size).to eql(3)
     end
   end
+
+  describe '#move' do
+    it 'performs promotion to Queen' do
+      cb = Chessboard.new
+      start = ChessPosition.from_s('e7')
+      destination = ChessPosition.from_s('e8')
+
+      cb[start] = Pawn.white
+
+      cb.move({ from: start, to: destination, promote: :Queen })
+
+      expect(cb[destination]).to equal(Queen.white)
+    end
+
+    it 'performs promotion to Rook' do
+      cb = Chessboard.new
+      start = ChessPosition.from_s('b2')
+      destination = ChessPosition.from_s('b1')
+
+      cb[start] = Pawn.black
+
+      cb.move({ from: start, to: destination, promote: :Rook })
+
+      expect(cb[destination]).to equal(Rook.black)
+    end
+
+    it 'performs promotion to Bishop' do
+      cb = Chessboard.new
+      start = ChessPosition.from_s('h7')
+      destination = ChessPosition.from_s('h8')
+
+      cb[start] = Pawn.white
+
+      cb.move({ from: start, to: destination, promote: :Bishop })
+
+      expect(cb[destination]).to equal(Bishop.white)
+    end
+
+    it 'performs promotion to Knight' do
+      cb = Chessboard.new
+      start = ChessPosition.from_s('g2')
+      destination = ChessPosition.from_s('g1')
+
+      cb[start] = Pawn.black
+
+      cb.move({ from: start, to: destination, promote: :Knight })
+
+      expect(cb[destination]).to equal(Knight.black)
+    end
+
+    it 'performs promotion to Queen by default' do
+      cb = Chessboard.new
+      start = ChessPosition.from_s('a7')
+      destination = ChessPosition.from_s('a8')
+
+      cb[start] = Pawn.white
+
+      cb.move({ from: start, to: destination })
+
+      expect(cb[destination]).to equal(Queen.white)
+    end
+
+    it 'performs promotion to Queen if specified to promote to other piece than Queen, Rook, Bishop or Knight' do
+      cb = Chessboard.new
+      start = ChessPosition.from_s('f2')
+      destination = ChessPosition.from_s('f1')
+
+      cb[start] = Pawn.black
+
+      cb.move({ from: start, to: destination, promote: :Pawn })
+
+      expect(cb[destination]).to equal(Queen.black)
+    end
+  end
 end
