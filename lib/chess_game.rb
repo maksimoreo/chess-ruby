@@ -56,42 +56,12 @@ class ChessGame
 
       # TODO: check if player wants a draw or to surrender
 
-      if allowed_moves.key?(move) && allowed_moves[move.from].include?(move.to)
-        @chessboard.move(move.from, move.to)
+      if allowed_moves.key?(move[:from]) && allowed_moves[move[:from]].include?(move[:to])
+        @chessboard.move(move[:from], move[:to])
         break
       end
     end
 
     @current_player = @current_player.color == @player1.color ? @player2 : @player1
-  end
-
-  # Returns chess piece or nil if cell is empty
-  def chess_piece_at(position)
-    raise 'expected ChessPosition object' unless position.is_a?(ChessPosition)
-
-    @chessboard[position]
-  end
-
-  # Places chess piece at specified position
-  def place_chess_piece(chess_piece, position)
-    unless chess_piece.class.ancestors.include?(ChessPiece)
-      raise 'only ChessPiece objects or derived objects can be placed on ChessBoard'
-    end
-    raise 'expected ChessPosition object' unless position.is_a?(ChessPosition)
-    raise 'cell is not empty' unless @chessboard[position].nil?
-
-    @chessboard[position] = chess_piece
-  end
-
-  def allowed_moves(color)
-    # all_available_moves = []
-    # for each piece _p on the board
-    #   if _color == _p.color
-    #     _moves = get available moves
-    #     for each move _move in _moves
-    #       _new_board = try perform the move _move
-    #       unless _new_board.is_check?(color)
-    #         all_available_moves << _move
-    # return all_available_moves
   end
 end
