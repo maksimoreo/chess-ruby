@@ -49,9 +49,11 @@ class HumanPlayer < Player
       # TODO: also accept 'draw' and 'surrender'
       # TODO: also accept pawn promotion
 
-      if input =~ /^([a-h][1-8]){2}$/
-        move[:from] = ChessPosition.from_s(input[0..1])
-        move[:to] = ChessPosition.from_s(input[2..3])
+      if input == 'surrender'
+        move = { surrender: true }
+        break
+      elsif input =~ /^([a-h][1-8]){2}$/
+        move = { from: ChessPosition.from_s(input[0..1]), to: ChessPosition.from_s(input[2..3]) }
         break
       end
     end
