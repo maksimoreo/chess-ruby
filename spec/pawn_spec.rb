@@ -87,6 +87,13 @@ describe Pawn do
       moves = Pawn.white.available_moves(ChessPosition.from_s('c2'), cb)
       expect(moves.size).to eql(3)
     end
+
+    it 'cannot capture pieces of the same color' do
+      cb = Chessboard.new
+      cb[ChessPosition.from_s('e3')] = Pawn.white
+      moves = Pawn.white.available_moves(ChessPosition.from_s('d2'), cb)
+      expect(moves.size).to eql(2)
+    end
   end
 
   describe '#move' do

@@ -6,9 +6,9 @@ require_relative 'chesspiece'
 class Pawn < ChessPiece
   def available_moves(from, chessboard)
     if color == :white
-      available_moves_white(from, chessboard)
+      available_moves_direction(from, chessboard, 1, 1)
     else
-      available_moves_black(from, chessboard)
+      available_moves_direction(from, chessboard, -1, 6)
     end
   end
 
@@ -24,7 +24,7 @@ class Pawn < ChessPiece
   def attack_cells_direction(from, row_direction)
     [[row_direction, -1], [row_direction, 1]]
       .map { |direction| from + Point.from_a(direction) }
-      .reject { |move| move.nil? }
+      .reject(&:nil?)
   end
 
   def move(chess_move, chessboard)
@@ -32,51 +32,29 @@ class Pawn < ChessPiece
 
     # After move was performed check if pawn can be promoted
     if (color == :white && chess_move[:to].i == 7) || (color == :black && chess_move[:to].i == 0)
-      promote(chessboard, chess_move[:to], chess_move.fetch(:promote, :Queen))
+      promote(chessboard, chess_move[:to], chess_move[:promote])
     end
   end
 
-  def available_moves_white(from, chessboard)
+  def available_moves_direction(from, chessboard, direction, start_row)
     moves = []
+    forward = from.up(direction)
 
-    # no moves available if pawn is at the top (*8)
-    unless from.i == 7
+    unless forward.nil?
+      if chessboard[forward].nil?
+        # move one space forward if nothing is blocking
+        moves << forward
 
-      # move up is available if nothing is blocking it
-      if chessboard.cell_empty?(from.up)
-        moves << from.up
+        # move two spaces forward from start position if nothing is blocking
+        if from.i == start_row && chessboard.cell_empty?(forward.up(direction))
+          moves << forward.up(direction)
+        end
 
-        # move two spaces up from start position (*2) if nothing is blocking
-        if from.i == 1 && chessboard.cell_empty?(from.up(2))
-          moves << from.up(2)
+        # capture if cell isn't emtpy
+        moves += attack_cells_direction(from, direction).select do |move|
+          !chessboard[move].nil? && chessboard[move].color != color
         end
       end
-
-      # capture if cell isn't empty
-      moves += attack_cells_direction(from, 1).reject { |move| chessboard.cell_empty?(move) }
-    end
-
-    moves
-  end
-
-  def available_moves_black(from, chessboard)
-    moves = []
-
-    # no moves available if pawn is at the bottom (*1)
-    unless from.i == 0
-
-      # move down is available if nothing is blocking it
-      if chessboard.cell_empty?(from.down)
-        moves << from.down
-
-        # move two spaces down from start position (*7) if nothing is blocking
-        if from.i == 6 && chessboard.cell_empty?(from.down(2))
-          moves << from.down(2)
-        end
-      end
-
-      # capture if cell isn't empty
-      moves += attack_cells_direction(from, -1).reject { |move| chessboard.cell_empty?(move) }
     end
 
     moves
