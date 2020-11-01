@@ -5,12 +5,22 @@ require_relative 'players/random_move_player'
 def start_game(chessboard)
   input = Console.ask('Choose players:', 'Player vs Player', 'Player vs Computer', 'Computer vs Computer')
 
+  state = :playing
   case input
   when 0 # pvp
-    game_loop(chessboard, nil, nil)
+    state = game_loop(chessboard, nil, nil)
   when 1 # pvc
-    Console.ask_color == :white ? game_loop(chessboard, nil, RandomMovePlayer.new(:black)) : game_loop(RandomMovePlayer.new(:white), nil)
+    state = Console.ask_color == :white ? game_loop(chessboard, nil, RandomMovePlayer.new(:black)) : game_loop(RandomMovePlayer.new(:white), nil)
   when 2 # cvc
+  end
+
+  case state
+  when :playing
+    puts 'Finish game next time!'
+  when :white, :black
+    puts "#{state} won!"
+  when :draw
+    puts "Draw!"
   end
 end
 
@@ -31,6 +41,16 @@ def game_loop(chessboard, player1, player2)
     if allowed_moves.key?(response[:from]) && allowed_moves[response[:from]].include?(response[:to])
       chess_game[:chessboard].move(response)
       chess_game[:current_color] = ChessPiece.opposite_color(chess_game[:current_color])
+
+      if chess_game[:chessboard].allowed_moves(chess_game[:current_color]).empty?
+        if chess_game[:chessboard].check?(chess_game[:current_color])
+          chess_game[:state] = ChessPiece.opposite_color(chess_game[:current_color])
+        else
+          chess_game[:state] = :draw
+        end
+
+        break
+      end
     else
       chess_game[:state] = ChessPiece.opposite_color(chess_game[:current_color])
       break
@@ -66,7 +86,7 @@ def process_input(chess_game)
     when 'draw'
       return { draw: true }
     when 'moves'
-      print_moves(chess_game[:chessboard], chess_game[:current_color])
+      Console.print_moves(chess_game[:chessboard], chess_game[:current_color])
       next
     when /^([a-h][1-8]){2}/
       input_move = process_move(chess_game[:chessboard], chess_game[:current_color], input)
