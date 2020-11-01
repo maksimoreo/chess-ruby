@@ -168,4 +168,13 @@ describe Chessboard do
       end
     end
   end
+
+  describe '#from_json' do
+    it 'creates new chessboard from json string' do
+      cb1 = Chessboard.default_chessboard
+      json_string = cb1.to_json
+      cb2 = Chessboard.from_json(json_string)
+      expect(cb2).to eq(cb1)
+    end
+  end
 end

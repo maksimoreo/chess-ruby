@@ -6,6 +6,7 @@ require_relative 'chesspieces/rook'
 require_relative 'chesspieces/bishop'
 require_relative 'chesspieces/knight'
 require_relative 'chesspieces/pawn'
+require 'json'
 
 # Container of 64 spaces for chess pieces
 # Allows indexing by ChessPosition object
@@ -37,19 +38,23 @@ class Chessboard
     cb
   end
 
+  def self.from_json(str)
+    cb = Chessboard.new
+    cb.from_json(str)
+    cb
+  end
+
   # Creates an empty chess board
   def initialize
     @board = Array.new(64)
 
     @info = {
       white: {
-        king_position: ChessPosition.from_s('e1'),
         castling: {
           queenside: true, kingside: true
         }
       },
       black: {
-        king_position: ChessPosition.from_s('e8'),
         castling: {
           queenside: true, kingside: true
         }
@@ -59,6 +64,22 @@ class Chessboard
 
   def initialize_copy(original)
     @board = original.board.dup
+  end
+
+  def to_json
+    board = @board.map { |chess_piece| chess_piece.nil? ? ' ' : [chess_piece.name, chess_piece.color] }
+    { board: board, info: @info }.to_json
+  end
+
+  def from_json(str)
+    hash = JSON.parse(str, { symbolize_names: true })
+    @info = hash[:info]
+    @board = hash[:board].map do |(chess_piece_name, color)|
+      chess_piece_table = { 'Pawn' => Pawn, 'Knight' => Knight, 'Bishop' => Bishop,
+        'Rook' => Rook, 'Queen' => Queen, 'King' => King }
+      chess_piece_class = chess_piece_table[chess_piece_name]
+      chess_piece_class.nil? ? nil : chess_piece_class[color.to_sym]
+    end
   end
 
   def to_a
