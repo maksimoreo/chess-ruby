@@ -2,9 +2,9 @@
 
 # Base class Player
 class Player
-  attr_reader :name
+  attr_reader :color
 
-  def initialize(name)
-    @name = name
+  def initialize(color)
+    @color = color
   end
 end

@@ -1,5 +1,4 @@
-require_relative 'chess_game'
-require_relative 'players/human_player'
+require_relative 'chessboard'
 require_relative 'players/random_move_player'
 
 def ask(question, *options)
@@ -34,7 +33,7 @@ def start_game(chessboard)
   when 0 # pvp
     game_loop(chessboard, nil, nil)
   when 1 # pvc
-    ask_color == :white ? game_loop(chessboard, RandomMovePlayer.new, nil) : game_loop(nil, RandomMovePlayer.new)
+    ask_color == :white ? game_loop(chessboard, nil, RandomMovePlayer.new(:black)) : game_loop(RandomMovePlayer.new(:white), nil)
   when 2 # cvc
   end
 end
