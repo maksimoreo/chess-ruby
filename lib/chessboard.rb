@@ -157,6 +157,10 @@ class Chessboard
     self[pos].attack_cells(pos, self)
   end
 
+  def available_moves_from(pos)
+    self[pos].available_moves(pos, self)
+  end
+
   def allowed_moves_from(pos)
     self[pos].allowed_moves(pos, self)
   end
