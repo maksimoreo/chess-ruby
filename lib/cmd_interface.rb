@@ -38,6 +38,13 @@ module Console
     puts '   \\' + '_' * 18 + '/'
     puts "     #{(0..7).map { |j| (j + 'a'.ord).chr }.to_a.join(' ')}"
   end
+
+  def self.print_moves(chessboard, color)
+    moves = chessboard.allowed_moves(color)
+    moves.keys.each do |key|
+      puts "#{key}: #{moves[key].join(', ')}"
+    end
+  end
 end
 
 module ChessPieceMaps
