@@ -65,8 +65,13 @@ def process_input(chess_game)
       return { surrender: true }
     when 'draw'
       return { draw: true }
+    when 'moves'
+      print_moves(chess_game[:chessboard], chess_game[:current_color])
+      next
     when /^([a-h][1-8]){2}/
-      return { from: ChessPosition.from_s(input[0..1]), to: ChessPosition.from_s(input[2..3]) }
+      input_move = process_move(chess_game[:chessboard], chess_game[:current_color], input)
+      return input_move unless input_move.nil?
+      next
     else
       puts 'Invalid input!'
       next
@@ -76,6 +81,26 @@ def process_input(chess_game)
   end
 
   false
+end
+
+def process_move(chessboard, color, input)
+  from = ChessPosition.from_s(input[0..1])
+  to = ChessPosition.from_s(input[2..3])
+  chess_piece = chessboard[from]
+  if chess_piece.nil?
+    puts "There's no figure at cell: #{input[0..1]}"
+  elsif chess_piece.color != color
+    puts "You cannot move figures of color: #{chess_piece.color}"
+  else
+    if !chessboard.available_moves_from(from).include?(to)
+      puts "#{chess_piece} cannot move to #{input[2..3]}"
+    elsif !chessboard.allowed_moves_from(from).include?(to)
+      puts "#{chess_piece} cannot move to #{input[2..3]} (check!)"
+    else
+      return { from: from, to: to }
+    end
+  end
+  nil
 end
 
 def save_chessboard(chessboard)
