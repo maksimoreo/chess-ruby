@@ -1,39 +1,15 @@
 require_relative 'chessboard'
+require_relative 'cmd_interface'
 require_relative 'players/random_move_player'
 
-def ask(question, *options)
-  puts question
-  options.each_with_index { |option, index| puts "#{index + 1}. #{option}" }
-
-  input = 0
-  until input.between?(1, options.size)
-    print "[1-#{options.size}] > "
-    input = gets.chomp.to_i
-  end
-
-  input - 1
-end
-
-def ask_file_name(question)
-  puts question
-  print '> '
-  # TODO: check regex
-  # TODO: check if file exists
-  gets.chomp
-end
-
-def ask_color
-  ask('Choose color:', 'White', 'Black') == 0 ? :white : :black
-end
-
 def start_game(chessboard)
-  input = ask('Choose players:', 'Player vs Player', 'Player vs Computer', 'Computer vs Computer')
+  input = Console.ask('Choose players:', 'Player vs Player', 'Player vs Computer', 'Computer vs Computer')
 
   case input
   when 0 # pvp
     game_loop(chessboard, nil, nil)
   when 1 # pvc
-    ask_color == :white ? game_loop(chessboard, nil, RandomMovePlayer.new(:black)) : game_loop(RandomMovePlayer.new(:white), nil)
+    Console.ask_color == :white ? game_loop(chessboard, nil, RandomMovePlayer.new(:black)) : game_loop(RandomMovePlayer.new(:white), nil)
   when 2 # cvc
   end
 end
@@ -45,7 +21,7 @@ def game_loop(chessboard, player1, player2)
 
   loop do
     puts "#{chess_game[:current_color]} plays:"
-    print_chessboard(chess_game[:chessboard])
+    Console.print_chessboard(chess_game[:chessboard])
 
     response = current_player.call.nil? ? process_input(chess_game) : current_player.call.move(chess_game[:chessboard])
 
@@ -65,39 +41,11 @@ def game_loop(chessboard, player1, player2)
 end
 
 def load_chessboard
-  file_name = ask_file_name('Please enter a file name to load chessboard from:')
+  file_name = Console.ask_file_name('Please enter a file name to load chessboard from:')
 
   return nil if file_name == ''
 
   return Chessboard.from_json(File.read(file_name))
-end
-
-module ChessPieceMaps
-  class << self
-    attr_reader :chess_piece_map_unicode
-  end
-
-  @chess_piece_map_unicode = {
-    white: { King: "\u2654 ", Queen: "\u2655 ", Rook: "\u2656 ", Bishop: "\u2657 ", Knight: "\u2658 ", Pawn: "\u2659 " },
-    black: { King: "\u265a ", Queen: "\u265b ", Rook: "\u265c ", Bishop: "\u265d ", Knight: "\u265e ", Pawn: "\u265f " },
-    empty_white: "\u2591" * 2,
-    empty_black: '  '
-  }
-end
-
-def print_chessboard(chessboard, cp_map = ChessPieceMaps.chess_piece_map_unicode)
-  empty = ->(i, j) { (i + j).even? ? cp_map[:empty_white] : cp_map[:empty_black]}
-
-  puts '    ' + '_' * 18
-  puts '   /' + ' ' * 18 + '\\'
-  chessboard.to_two_dimensional_array.each_with_index.reverse_each do |row, row_index|
-    row_string = row.each_with_index.map do |cell, column_index|
-      cell.nil? ? empty.call(row_index, column_index) : cp_map[cell.color][cell.name.to_sym]
-    end.join('')
-    puts "#{row_index + 1} |  #{row_string}  |"
-  end
-  puts '   \\' + '_' * 18 + '/'
-  puts "     #{(0..7).map { |j| (j + 'a'.ord).chr }.to_a.join(' ')}"
 end
 
 def process_input(chess_game)
@@ -131,7 +79,7 @@ def process_input(chess_game)
 end
 
 def save_chessboard(chessboard)
-  file_name = ask_file_name('Please enter a file name to save the chessboard in:')
+  file_name = Console.ask_file_name('Please enter a file name to save the chessboard in:')
   File.write(file_name, chessboard.to_json)
   puts "Chessboard is saved in: #{file_name}"
 
@@ -139,7 +87,7 @@ end
 
 puts 'Welcome to Chess!'
 loop do
-  input = ask('Menu:', 'Start new game', 'Load game', 'About', 'Exit')
+  input = Console::ask('Menu:', 'Start new game', 'Load game', 'About', 'Exit')
 
   case input
   when 0 # Start new game
@@ -149,7 +97,7 @@ loop do
     next if chess_game.nil?
     start_game(chess_game)
   when 2 # About
-    puts 'About'
+    puts 'Chess game v999 2020-10-01'
   when 3 # exit
     break
   end
