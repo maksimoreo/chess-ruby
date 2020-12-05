@@ -4,6 +4,12 @@ require_relative 'chesspiece'
 
 # Pawn chesspiece
 class Pawn < ChessPiece
+  @promotion = { queen: Queen, rook: Rook, bishop: Bishop, knight: Knight }
+
+  def self.promotion(promote_to, color)
+    @promotion.fetch(promote_to, Queen)[color]
+  end
+
   def available_moves(from, chessboard)
     if color == :white
       available_moves_direction(from, chessboard, 1, 1)
@@ -63,17 +69,6 @@ class Pawn < ChessPiece
   private
 
   def promote(chessboard, pos, promote_to)
-    case promote_to
-    when :Queen
-      chessboard[pos] = Queen[color]
-    when :Rook
-      chessboard[pos] = Rook[color]
-    when :Bishop
-      chessboard[pos] = Bishop[color]
-    when :Knight
-      chessboard[pos] = Knight[color]
-    else
-      chessboard[pos] = Queen[color]
-    end
+    chessboard[pos] = Pawn.promotion(promote_to, color)
   end
 end

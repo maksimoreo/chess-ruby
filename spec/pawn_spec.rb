@@ -104,7 +104,7 @@ describe Pawn do
 
       cb[start] = Pawn.white
 
-      cb.move({ from: start, to: destination, promote: :Queen })
+      cb.move({ from: start, to: destination, promote: :queen })
 
       expect(cb[destination]).to equal(Queen.white)
     end
@@ -116,7 +116,7 @@ describe Pawn do
 
       cb[start] = Pawn.black
 
-      cb.move({ from: start, to: destination, promote: :Rook })
+      cb.move({ from: start, to: destination, promote: :rook })
 
       expect(cb[destination]).to equal(Rook.black)
     end
@@ -128,7 +128,7 @@ describe Pawn do
 
       cb[start] = Pawn.white
 
-      cb.move({ from: start, to: destination, promote: :Bishop })
+      cb.move({ from: start, to: destination, promote: :bishop })
 
       expect(cb[destination]).to equal(Bishop.white)
     end
@@ -140,7 +140,7 @@ describe Pawn do
 
       cb[start] = Pawn.black
 
-      cb.move({ from: start, to: destination, promote: :Knight })
+      cb.move({ from: start, to: destination, promote: :knight })
 
       expect(cb[destination]).to equal(Knight.black)
     end
@@ -164,7 +164,7 @@ describe Pawn do
 
       cb[start] = Pawn.black
 
-      cb.move({ from: start, to: destination, promote: :Pawn })
+      cb.move({ from: start, to: destination, promote: :pawn })
 
       expect(cb[destination]).to equal(Queen.black)
     end
