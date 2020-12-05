@@ -146,6 +146,13 @@ class Chessboard
     end
   end
 
+  def each_that_attacks(attack_pos)
+    return to_enum(:each_that_attacks, attack_pos) unless block_given?
+    each_chess_piece_with_pos do |piece, from_pos|
+      yield(piece, from_pos) if piece.attack_cells(from_pos, self).include?(attack_pos)
+    end
+  end
+
   def find_pos(chess_piece_class, color = nil)
     index = @board.find_index do |cell|
       !cell.nil? && cell.class == chess_piece_class && (color.nil? || cell.color == color)

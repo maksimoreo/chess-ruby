@@ -177,4 +177,23 @@ describe Chessboard do
       expect(cb2).to eq(cb1)
     end
   end
+
+  describe '#each_that_attacks' do
+    it 'returns pieces that attack specified cell' do
+      cb = Chessboard.new
+      pawn1_pos = ChessPosition.from_s('d3')
+      cb[pawn1_pos] = Pawn.white
+      pawn2_pos = ChessPosition.from_s('c4')
+      cb[pawn2_pos] = Pawn.white
+      knight_pos = ChessPosition.from_s('e3')
+      cb[knight_pos] = Knight.white
+      bishop_pos = ChessPosition.from_s('f3')
+      cb[bishop_pos] = Bishop.white
+      rook_pos = ChessPosition.from_s('g5')
+      cb[rook_pos] = Rook.white
+      result = []
+      cb.each_that_attacks(ChessPosition.from_s('d5')) { |piece, pos| result << [piece, pos] }
+      expect(result).to contain_exactly([Pawn.white, pawn2_pos], [Knight.white, knight_pos], [Bishop.white, bishop_pos], [Rook.white, rook_pos])
+    end
+  end
 end
