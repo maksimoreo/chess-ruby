@@ -1,3 +1,4 @@
+require_relative 'chess_move'
 require_relative 'chessboard'
 require_relative 'cmd_interface'
 require_relative 'players/random_move_player'
@@ -10,7 +11,7 @@ def start_game(chessboard)
   when 0 # pvp
     state = game_loop(chessboard, nil, nil)
   when 1 # pvc
-    state = Console.ask_color == :white ? game_loop(chessboard, nil, RandomMovePlayer.new(:black)) : game_loop(RandomMovePlayer.new(:white), nil)
+    state = Console.ask_color == :white ? game_loop(chessboard, nil, RandomMovePlayer.new(:black)) : game_loop(chessboard, RandomMovePlayer.new(:white), nil)
   when 2 # cvc
   end
 
@@ -38,7 +39,7 @@ def game_loop(chessboard, player1, player2)
     break unless chess_game[:state] == :playing
 
     allowed_moves = chess_game[:chessboard].allowed_moves(chess_game[:current_color])
-    if allowed_moves.key?(response[:from]) && allowed_moves[response[:from]].include?(response[:to])
+    if allowed_moves.include?(response)
       chess_game[:chessboard].move(response)
       chess_game[:current_color] = ChessPiece.opposite_color(chess_game[:current_color])
 
@@ -104,20 +105,21 @@ def process_input(chess_game)
 end
 
 def process_move(chessboard, color, input)
-  from = ChessPosition.from_s(input[0..1])
-  to = ChessPosition.from_s(input[2..3])
+  chess_move = ChessMove.from_s(input)
+  from = chess_move.from
+  to = chess_move.to
   chess_piece = chessboard[from]
   if chess_piece.nil?
     puts "There's no figure at cell: #{input[0..1]}"
   elsif chess_piece.color != color
     puts "You cannot move figures of color: #{chess_piece.color}"
   else
-    if !chessboard.available_moves_from(from).include?(to)
+    if !chessboard.available_moves_from(from).include?(chess_move)
       puts "#{chess_piece} cannot move to #{input[2..3]}"
-    elsif !chessboard.allowed_moves_from(from).include?(to)
+    elsif !chessboard.allowed_moves_from(from).include?(chess_move)
       puts "#{chess_piece} cannot move to #{input[2..3]} (check!)"
     else
-      return { from: from, to: to }
+      return chess_move
     end
   end
   nil
