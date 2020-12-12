@@ -11,7 +11,7 @@ describe ChessPiece do
       expect(moves.size).to eql(2)
     end
 
-    it 'returns 0 moves' do
+    it 'returns 0 moves when king is under attack' do
       cb = Chessboard.new
       cb[ChessPosition.from_s('b2')] = King.white
       cb[ChessPosition.from_s('d2')] = Pawn.white

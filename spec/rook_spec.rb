@@ -39,4 +39,19 @@ describe Rook do
       expect(moves.size).to eql(0)
     end
   end
+
+  describe '#attack_cells' do
+    it 'returns array of cells' do
+      cb = Chessboard.new
+      cb[ChessPosition.from_s('g6')] = Rook.black
+      cb[ChessPosition.from_s('g3')] = Pawn.white
+      cb[ChessPosition.from_s('d6')] = Pawn.black
+
+      moves = Rook.black.available_moves(ChessPosition.from_s('g6'), cb)
+      attack_cells = Rook.black.attack_cells(ChessPosition.from_s('g6'), cb)
+
+      expect(moves.size).to eql(8)
+      expect(attack_cells.size).to eql(9)
+    end
+  end
 end

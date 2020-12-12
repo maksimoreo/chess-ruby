@@ -8,9 +8,9 @@ class Rook < ChessPiece
     attack_cells_axis_aligned(from, chessboard)
   end
 
-  def move(chess_move, chessboard)
+  def perform_chess_move(chess_move, chessboard)
     super
-    update_castling_info(chessboard, chess_move[:from])
+    update_castling_info(chessboard, chess_move.from)
   end
 
   private

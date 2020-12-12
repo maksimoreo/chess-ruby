@@ -112,7 +112,7 @@ class Chessboard
   end
 
   def move(chess_move)
-    self[chess_move[:from]].move(chess_move, self)
+    self[chess_move.from].perform_chess_move(chess_move, self)
   end
 
   def can_move_or_take?(pos, color)
@@ -134,21 +134,29 @@ class Chessboard
     end
   end
 
-  def each_chess_piece
-    return to_enum(:each_chess_piece) unless block_given?
-    @board.each { |cell| yield(cell) unless cell.nil? }
-  end
-
-  def each_chess_piece_with_pos
-    return to_enum(:each_chess_piece_with_pos) unless block_given?
-    @board.each_with_index do | cell, index |
-      yield(cell, ChessPosition.from_i(index)) unless cell.nil?
+  # if color is :white or :black, returns each chess piece of specified color
+  # if color is nil returns all chess pieces
+  def each_chess_piece(color = nil)
+    return to_enum(:each_chess_piece, color) unless block_given?
+    @board.each do |cell|
+      if !cell.nil? && (color.nil? || cell.color == color)
+        yield(cell)
+      end
     end
   end
 
-  def each_that_attacks(attack_pos)
-    return to_enum(:each_that_attacks, attack_pos) unless block_given?
-    each_chess_piece_with_pos do |piece, from_pos|
+  def each_chess_piece_with_pos(color = nil)
+    return to_enum(:each_chess_piece_with_pos, color) unless block_given?
+    @board.each_with_index do |cell, index|
+      if !cell.nil? && (color.nil? || cell.color == color)
+        yield(cell, ChessPosition.from_i(index))
+      end
+    end
+  end
+
+  def each_that_attacks(attack_pos, color = nil)
+    return to_enum(:each_that_attacks, attack_pos, color) unless block_given?
+    each_chess_piece_with_pos(color) do |piece, from_pos|
       yield(piece, from_pos) if piece.attack_cells(from_pos, self).include?(attack_pos)
     end
   end
@@ -168,20 +176,32 @@ class Chessboard
     self[pos].available_moves(pos, self)
   end
 
+  def allowed_cells_from(pos)
+    self[pos].allowed_cells(pos, self)
+  end
+
   def allowed_moves_from(pos)
     self[pos].allowed_moves(pos, self)
   end
 
+  # def allowed_moves(color)
+  #   @board.each_with_index.reduce({}) do |moves, (chess_piece, index)|
+  #     if !chess_piece.nil? && chess_piece.color == color
+  #       pos = ChessPosition.from_i(index)
+  #       additional_moves = chess_piece.allowed_moves(pos, self)
+  #       unless additional_moves.empty?
+  #         moves[pos] = additional_moves
+  #       end
+  #     end
+  #     moves
+  #   end
+  # end
+
   def allowed_moves(color)
-    @board.each_with_index.reduce({}) do |moves, (chess_piece, index)|
-      if !chess_piece.nil? && chess_piece.color == color
-        pos = ChessPosition.from_i(index)
-        additional_moves = chess_piece.allowed_moves(pos, self)
-        unless additional_moves.empty?
-          moves[pos] = additional_moves
-        end
-      end
-      moves
+    moves = []
+    each_chess_piece_with_pos(color) do |chess_piece, pos|
+      moves.push(*chess_piece.allowed_moves(pos, self))
     end
+    moves
   end
 end

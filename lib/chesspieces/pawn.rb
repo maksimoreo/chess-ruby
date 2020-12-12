@@ -1,6 +1,10 @@
 # frozen_string_literal: true
 
 require_relative 'chesspiece'
+require_relative 'queen'
+require_relative 'rook'
+require_relative 'bishop'
+require_relative 'knight'
 
 # Pawn chesspiece
 class Pawn < ChessPiece
@@ -10,11 +14,11 @@ class Pawn < ChessPiece
     @promotion.fetch(promote_to, Queen)[color]
   end
 
-  def available_moves(from, chessboard)
+  def available_cells(from, chessboard)
     if color == :white
-      available_moves_direction(from, chessboard, 1, 1)
+      available_cells_direction(from, chessboard, 1, 1)
     else
-      available_moves_direction(from, chessboard, -1, 6)
+      available_cells_direction(from, chessboard, -1, 6)
     end
   end
 
@@ -33,16 +37,16 @@ class Pawn < ChessPiece
       .reject(&:nil?)
   end
 
-  def move(chess_move, chessboard)
+  def perform_chess_move(chess_move, chessboard)
     super
 
     # After move was performed check if pawn can be promoted
-    if (color == :white && chess_move[:to].i == 7) || (color == :black && chess_move[:to].i == 0)
-      promote(chessboard, chess_move[:to], chess_move[:promote])
+    if (color == :white && chess_move.to.i == 7) || (color == :black && chess_move.to.i == 0)
+      promote(chessboard, chess_move.to, chess_move.promotion)
     end
   end
 
-  def available_moves_direction(from, chessboard, direction, start_row)
+  def available_cells_direction(from, chessboard, direction, start_row)
     moves = []
     forward = from.up(direction)
 
@@ -60,6 +64,11 @@ class Pawn < ChessPiece
         moves += attack_cells_direction(from, direction).select do |move|
           !chessboard[move].nil? && chessboard[move].color != color
         end
+
+        # TODO: en passant
+
+        # TODO: promotion
+
       end
     end
 

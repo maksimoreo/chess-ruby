@@ -1,6 +1,5 @@
 require_relative 'chesspiece'
-require_relative '../chess_position'
-require_relative '../chessboard'
+require_relative '../point'
 
 class Knight < ChessPiece
   # 8 default knight's moves

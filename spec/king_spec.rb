@@ -61,7 +61,7 @@ describe King do
 
       moves = cb.allowed_moves_from(king_pos)
       expect(moves.size).to eql(6)
-      expect(moves).to include(ChessPosition.from_s('c1'))
+      expect(moves).to include(ChessMove.from_s('e1c1'))
     end
 
     it 'allows kingside castling' do
@@ -73,7 +73,7 @@ describe King do
 
       moves = cb.allowed_moves_from(king_pos)
       expect(moves.size).to eql(6)
-      expect(moves).to include(ChessPosition.from_s('g8'))
+      expect(moves).to include(ChessMove.from_s('e8g8'))
     end
 
     it "doesn't allow queenside castling when king is under attack" do
@@ -86,7 +86,7 @@ describe King do
 
       moves = cb.allowed_moves_from(king_pos)
       expect(moves.size).to eql(4)
-      expect(moves).not_to include(ChessPosition.from_s('c1'))
+      expect(moves).not_to include(ChessMove.from_s('e1c1'))
     end
 
     it "doesn't allow kingside castling when cells between king and king's destination are under attack" do
@@ -99,7 +99,7 @@ describe King do
 
       moves = cb.allowed_moves_from(king_pos)
       expect(moves.size).to eql(3)
-      expect(moves).not_to include(ChessPosition.from_s('g1'))
+      expect(moves).not_to include(ChessMove.from_s('e1g1'))
     end
 
     it "doesn't allow castling if there are pieces between king and rook" do
@@ -112,7 +112,7 @@ describe King do
 
       moves = cb.allowed_moves_from(king_pos)
       expect(moves.size).to eql(5)
-      expect(moves).not_to include(ChessPosition.from_s('c8'))
+      expect(moves).not_to include(ChessMove.from_s('e8c8'))
     end
 
     it "doesn't allow castling if king moved previously" do
@@ -123,12 +123,12 @@ describe King do
       cb[ChessPosition.from_s('h8')] = Rook.black
 
       # move king
-      cb.move({ from: king_pos, to: king_pos.down })
-      cb.move({ from: king_pos.down, to: king_pos })
+      cb.move(ChessMove.from_s('e8f7'))
+      cb.move(ChessMove.from_s('f7e8'))
 
       moves = cb.allowed_moves_from(king_pos)
       expect(moves.size).to eql(5)
-      expect(moves).not_to include(ChessPosition.from_s('g8'))
+      expect(moves).not_to include(ChessMove.from_s('e8g8'))
     end
 
     it "doesn't allow castling if rook moved previously" do
@@ -140,12 +140,12 @@ describe King do
       cb[rook_pos] = Rook.white
 
       # move rook
-      cb.move({ from: rook_pos, to: rook_pos.up(5) })
-      cb.move({ from: rook_pos.up(5), to: rook_pos })
+      cb.move(ChessMove.from_s('a1a5'))
+      cb.move(ChessMove.from_s('a5a1'))
 
       moves = cb.allowed_moves_from(king_pos)
+      expect(moves).not_to include(ChessMove.from_s('e1c1'))
       expect(moves.size).to eql(5)
-      expect(moves).not_to include(ChessPosition.from_s('c1'))
     end
   end
 
@@ -158,7 +158,7 @@ describe King do
       cb = Chessboard.new
       cb[ChessPosition.from_s('e1')] = King.white
       cb[ChessPosition.from_s('h1')] = Rook.white
-      cb.move({ from: ChessPosition.from_s('e1'), to: ChessPosition.from_s('g1') })
+      cb.move(ChessMove.from_s('e1g1'))
 
       expect(cb.board_eq?(result_cb))
     end
@@ -171,7 +171,7 @@ describe King do
       cb = Chessboard.new
       cb[ChessPosition.from_s('e8')] = King.black
       cb[ChessPosition.from_s('a8')] = Rook.black
-      cb.move({ from: ChessPosition.from_s('e8'), to: ChessPosition.from_s('c8') })
+      cb.move(ChessMove.from_s('e8c8'))
 
       expect(cb.board_eq?(result_cb))
     end

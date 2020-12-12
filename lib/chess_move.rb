@@ -1,4 +1,4 @@
-require 'chess_position'
+require_relative 'chess_position'
 
 class ChessMove
   attr_reader :from, :to, :promotion
@@ -12,7 +12,8 @@ class ChessMove
   end
 
   def self.from_s(s)
-    ChessMove.new(s[0, 2], s[2, 2], s[5, 6].strip.downcase.to_sym)
+    ChessMove.new(ChessPosition.from_s(s[0, 2]), ChessPosition.from_s(s[2, 2]),
+      s.size > 4 ? s[5, 6].strip.downcase.to_sym : nil)
   end
 
   def initialize(from, to, promotion = nil)
