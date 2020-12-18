@@ -12,6 +12,10 @@ class ChessPiece
     color == :white ? :black : :white
   end
 
+  def self.colors
+    [:white, :black]
+  end
+
   attr_reader :color
 
   def initialize(color)
