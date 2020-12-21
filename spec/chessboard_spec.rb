@@ -203,4 +203,62 @@ describe Chessboard do
       expect(result).to contain_exactly([Pawn.white, pawn2_pos], [Knight.white, knight_pos], [Bishop.white, bishop_pos], [Rook.white, rook_pos])
     end
   end
+
+  describe '#to_fen' do
+    it 'returns FEN notation for start position' do
+      fen = Chessboard.default_chessboard.to_fen(:white)
+      expect(fen).to eql('rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1')
+    end
+
+    it "returns correct FEN string for start position with move 1.e4" do
+      cb = Chessboard.default_chessboard
+      cb.move(ChessMove.from_s('e2e4'))
+      expect(cb.to_fen(:black)).to eql('rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b KQkq e3 0 1')
+    end
+
+    it "returns correct FEN string for moves 1.e4 c5 2.Nf3" do
+      cb = Chessboard.default_chessboard
+
+      cb.move(ChessMove.from_s('e2e4'))
+      expect(cb.to_fen(:black)).to eql('rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b KQkq e3 0 1')
+
+      cb.move(ChessMove.from_s('c7c5'))
+      expect(cb.to_fen(:white)).to eql('rnbqkbnr/pp1ppppp/8/2p5/4P3/8/PPPP1PPP/RNBQKBNR w KQkq c6 0 2')
+
+      cb.move(ChessMove.from_s('g1f3'))
+      expect(cb.to_fen(:black)).to eql('rnbqkbnr/pp1ppppp/8/2p5/4P3/5N2/PPPP1PPP/RNBQKB1R b KQkq - 1 2')
+    end
+
+    it 'returns correct FEN for C00 French Defence' do
+      cb = Chessboard.default_chessboard
+
+      cb.move(ChessMove.from_s('e2e4'))
+      cb.move(ChessMove.from_s('e7e6'))
+
+      expect(cb.to_fen(:white)).to eql('rnbqkbnr/pppp1ppp/4p3/8/4P3/8/PPPP1PPP/RNBQKBNR w KQkq - 0 2')
+    end
+
+    it 'returns correct FEN for C60 Ruy Lopez' do
+      cb = Chessboard.default_chessboard
+
+      cb.move(ChessMove.from_s('e2e4'))
+      cb.move(ChessMove.from_s('e7e5'))
+
+      cb.move(ChessMove.from_s('g1f3'))
+      cb.move(ChessMove.from_s('b8c6'))
+
+      cb.move(ChessMove.from_s('f1b5'))
+
+      expect(cb.to_fen(:black)).to eql('r1bqkbnr/pppp1ppp/2n5/1B2p3/4P3/5N2/PPPP1PPP/RNBQK2R b KQkq - 3 3')
+    end
+
+    it 'returns correct FEN for C00 French Defence' do
+      cb = Chessboard.default_chessboard
+
+      cb.move(ChessMove.from_s('e2e4'))
+      cb.move(ChessMove.from_s('c7c5'))
+
+      expect(cb.to_fen(:white)).to eql('rnbqkbnr/pp1ppppp/8/2p5/4P3/8/PPPP1PPP/RNBQKBNR w KQkq c6 0 2')
+    end
+  end
 end

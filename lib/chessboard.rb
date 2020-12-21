@@ -18,6 +18,7 @@ class Chessboard
   public
 
   attr_reader :info
+  attr_reader :en_passant
 
   def self.default_chessboard
     cb = Chessboard.new
@@ -60,6 +61,15 @@ class Chessboard
         }
       }
     }
+
+    # En passant target square, position behind the pawn that has just made a two-square move
+    @en_passant = nil
+
+    # Number of half moves since the last capture or pawn advance. Used by fifty-move rule
+    @half_moves = 0
+
+    # Number of full moves. Increments after Black's move
+    @move_count = 1
   end
 
   def initialize_copy(original)
@@ -111,12 +121,43 @@ class Chessboard
     self[from] = nil
   end
 
+  def reset_half_move_counter
+    @half_moves = 0
+  end
+
+  # This method follows en passant rule and 50 moves rule
   def move(chess_move)
+    @updated_en_passant = false
+
+    # If isn't a capturing move
+    if self[chess_move.to].nil?
+      @half_moves += 1
+    else
+      reset_half_move_counter # 50 moves rule counter resets after capturing
+    end
+
+    # Perform move by chess piece rules
+    chess_piece_color = self[chess_move.from].color
     self[chess_move.from].perform_chess_move(chess_move, self)
+
+    # Erase en passant if chess piece didn't update en passant
+    @en_passant = nil unless @updated_en_passant
+
+    # Increment move counter after black move
+    @move_count += 1 if chess_piece_color == :black
+  end
+
+  def en_passant=(cell)
+    @en_passant = cell
+    @updated_en_passant = true
   end
 
   def can_move_or_take?(pos, color)
     self[pos].nil? || self[pos].color != color
+  end
+
+  def can_take?(pos, color)
+    !self[pos].nil? && self[pos].color != color
   end
 
   def cell_empty?(pos)
@@ -184,24 +225,80 @@ class Chessboard
     self[pos].allowed_moves(pos, self)
   end
 
-  # def allowed_moves(color)
-  #   @board.each_with_index.reduce({}) do |moves, (chess_piece, index)|
-  #     if !chess_piece.nil? && chess_piece.color == color
-  #       pos = ChessPosition.from_i(index)
-  #       additional_moves = chess_piece.allowed_moves(pos, self)
-  #       unless additional_moves.empty?
-  #         moves[pos] = additional_moves
-  #       end
-  #     end
-  #     moves
-  #   end
-  # end
-
   def allowed_moves(color)
     moves = []
     each_chess_piece_with_pos(color) do |chess_piece, pos|
       moves.push(*chess_piece.allowed_moves(pos, self))
     end
     moves
+  end
+
+  def to_fen(color_move)
+    parts = []
+
+    # 1 (piece placement)
+    row_strings = []
+    naming = { pawn: 'p', knight: 'n', bishop: 'b', rook: 'r', queen: 'q', king: 'k' }
+
+    (0..7).reverse_each do |row_i|
+      current_row = []
+      empty_cell_counter = 0
+
+      @board.slice(row_i * 8, 8).each do |cell|
+        if cell.nil?
+          empty_cell_counter += 1
+        else
+          unless empty_cell_counter.zero?
+            current_row << empty_cell_counter
+            empty_cell_counter = 0
+          end
+
+          char = naming[cell.name.downcase.to_sym]
+          current_row << (cell.color == :white ? char.upcase : char)
+        end
+      end
+
+      unless empty_cell_counter.zero?
+        current_row << empty_cell_counter
+      end
+
+      row_strings << current_row.join('')
+    end
+    parts << row_strings.join('/')
+
+    # 2 (active color)
+    parts << color_move.to_s[0]
+
+    # 3 (castling availability)
+    castling_info = []
+    ChessPiece.colors.each do |color|
+      available_castlings = []
+      available_castlings << 'k' if @info[color][:castling][:queenside]
+      available_castlings << 'q' if @info[color][:castling][:queenside]
+
+      if available_castlings.empty?
+        castling_info << '-'
+      else
+        available_castlings = available_castlings.join('')
+        castling_info << (color == :white ? available_castlings.upcase : available_castlings)
+      end
+    end
+    parts << castling_info.join('')
+
+    # 4 (En passant target cell)
+    # lichess.org/editor (and prob some other engines too) specify en passant
+    # square only if it possible for opposite color to make this move but wiki
+    # says that en passant square should be recorded "regardless of whether
+    # there is a pawn in position to make an en passant capture"
+    # https://en.wikipedia.org/wiki/Forsyth%E2%80%93Edwards_Notation
+    parts << (@en_passant.nil? ? '-' : @en_passant.to_s)
+
+    # 5 (Number of half moves since capture or pawn move)
+    parts << @half_moves
+
+    # 6 (Move counter)
+    parts << @move_count
+
+    parts.join(' ')
   end
 end
