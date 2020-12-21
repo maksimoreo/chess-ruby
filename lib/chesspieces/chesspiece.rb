@@ -19,7 +19,7 @@ class ChessPiece
   attr_reader :color
 
   def initialize(color)
-    raise "invalid color: #{color}, must be :white or :black" unless color == :white || color == :black
+    raise ArgumentError.new("invalid color: #{color}, must be :white or :black") unless color == :white || color == :black
 
     @color = color
   end
@@ -32,13 +32,15 @@ class ChessPiece
     self.class.name
   end
 
-  # Returns array of ChessPositions where the chess piece can move from specified position
+  # Returns array of ChessMoves/ChessPositions where the chess piece can move from specified position
   # This function discards moves that result in check
 
+  # Returns ChessMoves
   def allowed_moves(from_cell, chessboard)
     map_chess_move_array(from_cell, allowed_cells(from_cell, chessboard))
   end
 
+  # Returns ChessPositions
   def allowed_cells(from_cell, chessboard)
     available_cells(from_cell, chessboard).reject do |to_cell|
       # copy chessboard
@@ -52,12 +54,15 @@ class ChessPiece
     end
   end
 
-  # Returns array of ChessPositions where the chess piece can go from current position
+  # Returns array of ChessMoves/ChessPositions where the chess piece can go from specified position
   # Doesn't check if king will be under attack after any of these moves
+
+  # Returns ChessMoves
   def available_moves(from_cell, chessboard)
     map_chess_move_array(from_cell, available_cells(from_cell, chessboard))
   end
 
+  # Returns ChessPositions
   def available_cells(from_cell, chessboard)
     attack_cells(from_cell, chessboard).select { |cell| chessboard.can_move_or_take?(cell, color) }
   end
@@ -69,21 +74,10 @@ class ChessPiece
     []
   end
 
-  # This function check if move is allowed
-  # def try_move(chess_move, chessboard)
-  #   move_is_allowed = allowed_moves(chess_move[:from], chessboard).include?(chess_move[:to])
-  #   move(chess_move, chessboard) if move_is_allowed
-  #   move_is_allowed
-  # end
-
-  # Moves ChessPiece on a given chessboard. Accepts move as hash { from:, to: }
-  # Derived class may override this behavior (pawn promotion, castling)
-  def move(chess_move, chessboard)
-    chessboard.reposition(chess_move[:from], chess_move[:to])
-  end
-
+  # Moves a ChessPiece by its own rules (castling, pawn promotion, en passant)
   # Same as previous function but accepts ChessMove class
   def perform_chess_move(chess_move, chessboard)
+    # If destination cells contains a chess piece, overwrite it
     chessboard.reposition(chess_move.from, chess_move.to)
   end
 
