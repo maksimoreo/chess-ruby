@@ -28,15 +28,18 @@ class Pawn < ChessPiece
       promote(chessboard, chess_move.to, chess_move.promotion)
     end
 
+    # After two-square move notify that en passant move is available
+    if (chess_move.from.i - chess_move.to.i).abs == 2
+      chessboard.en_passant = behind(chess_move.to)
+    end
+
     # If performing en passant move remove pawn that is being captured
     if chess_move.to == chessboard.en_passant
       chessboard[behind(chess_move.to)] = nil
     end
 
-    # After two-square move notify that en passant move is available
-    if (chess_move.from.i - chess_move.to.i).abs == 2
-      chessboard.en_passant = behind(chess_move.to)
-    end
+    # All pawn moves reset 50 moves rule counter
+    chessboard.reset_half_move_counter
   end
 
   def available_cells(from, chessboard)
