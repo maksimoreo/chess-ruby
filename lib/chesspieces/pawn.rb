@@ -14,27 +14,10 @@ class Pawn < ChessPiece
     @promotion.fetch(promote_to, Queen)[color]
   end
 
-  def available_cells(from, chessboard)
-    if color == :white
-      available_cells_direction(from, chessboard, 1, 1)
-    else
-      available_cells_direction(from, chessboard, -1, 6)
-    end
-  end
-
-  def attack_cells(from, _chessboard)
-    if color == :white
-      attack_cells_direction(from, 1)
-    else
-      attack_cells_direction(from, -1)
-    end
-  end
-
   # Pawn only attacks cells diagonally forward
-  def attack_cells_direction(from, row_direction)
-    [[row_direction, -1], [row_direction, 1]]
-      .map { |direction| from + Point.from_a(direction) }
-      .reject(&:nil?)
+  def attack_cells(from, _chessboard)
+    forward = from.up(color == :white ? 1 : -1)
+    forward.nil? ? [] : [forward.right, forward.left].reject(&:nil?)
   end
 
   def perform_chess_move(chess_move, chessboard)
@@ -44,40 +27,55 @@ class Pawn < ChessPiece
     if (color == :white && chess_move.to.i == 7) || (color == :black && chess_move.to.i == 0)
       promote(chessboard, chess_move.to, chess_move.promotion)
     end
+
+    # If performing en passant move remove pawn that is being captured
+    if chess_move.to == chessboard.en_passant
+      chessboard[behind(chess_move.to)] = nil
+    end
+
+    # After two-square move notify that en passant move is available
+    if (chess_move.from.i - chess_move.to.i).abs == 2
+      chessboard.en_passant = behind(chess_move.to)
+    end
   end
 
-  def available_cells_direction(from, chessboard, direction, start_row)
-    moves = []
+  def available_cells(from, chessboard)
+    start_row, direction = start_row_and_direction
+
+    cells = []
     forward = from.up(direction)
 
     unless forward.nil?
+      # Forward
       if chessboard[forward].nil?
-        # move one space forward if nothing is blocking
-        moves << forward
+        cells << forward
 
-        # move two spaces forward from start position if nothing is blocking
-        if from.i == start_row && chessboard.cell_empty?(forward.up(direction))
-          moves << forward.up(direction)
+        double_forward = forward.up(direction)
+        cells << double_forward if !double_forward.nil? && chessboard[double_forward].nil?
+      end
+
+      # Side capturing, En passant
+      [forward.left, forward.right].each do |forward_side|
+        if !forward_side.nil? && (chessboard.can_take?(forward_side, color) || forward_side == chessboard.en_passant)
+          cells << forward_side
         end
-
-        # capture if cell isn't emtpy
-        moves += attack_cells_direction(from, direction).select do |move|
-          !chessboard[move].nil? && chessboard[move].color != color
-        end
-
-        # TODO: en passant
-
-        # TODO: promotion
-
       end
     end
 
-    moves
+    cells
   end
 
   private
 
   def promote(chessboard, pos, promote_to)
     chessboard[pos] = Pawn.promotion(promote_to, color)
+  end
+
+  def behind(pos)
+    color == :white ? pos.down : pos.up
+  end
+
+  def start_row_and_direction
+    color == :white ? [1, 1] : [6, -1]
   end
 end

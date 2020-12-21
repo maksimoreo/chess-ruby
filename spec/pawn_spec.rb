@@ -97,6 +97,7 @@ describe Pawn do
   end
 
   describe '#move' do
+    # Promotions
     it 'performs promotion to Queen' do
       cb = Chessboard.new
       start = ChessPosition.from_s('e7')
@@ -167,6 +168,56 @@ describe Pawn do
       cb.move(ChessMove.new(start, destination, :pawn))
 
       expect(cb[destination]).to equal(Queen.black)
+    end
+
+    # En passant move
+    it 'notifies chessboard about en passant move when white pawn moves 2 spaces from start position' do
+      cb = Chessboard.new
+      cb[ChessPosition.from_s('g2')] = Pawn.white
+      cb.move(ChessMove.from_s('g2g4'))
+      expect(cb.en_passant).to eql(ChessPosition.from_s('g3'))
+    end
+
+    it 'notifies chessboard about en passant move when black pawn moves 2 spaces from start position' do
+      cb = Chessboard.new
+      cb[ChessPosition.from_s('b7')] = Pawn.black
+      cb.move(ChessMove.from_s('b7b5'))
+      expect(cb.en_passant).to eql(ChessPosition.from_s('b6'))
+    end
+
+    it "doesn't notify chessboard about en passant move when pawn moves 1 spaces from any position" do
+      cb = Chessboard.new
+      cb[ChessPosition.from_s('d6')] = Pawn.black
+      cb.move(ChessMove.from_s('d6d5'))
+      expect(cb.en_passant).to eql(nil)
+    end
+
+    it 'correctly performs en passant move for white' do
+      cb = Chessboard.new
+
+      # Chessboard setup
+      cb[ChessPosition.from_s('d5')] = Pawn.white
+      cb[ChessPosition.from_s('c7')] = Pawn.black
+
+      # Performing en passant move
+      cb.move(ChessMove.from_s('c7c5'))
+      cb.move(ChessMove.from_s('d5c6'))
+
+      expect(cb[ChessPosition.from_s('c5')]).to eql(nil)
+    end
+
+    it 'correctly performs en passant move for black' do
+      cb = Chessboard.new
+
+      # Chessboard setup
+      cb[ChessPosition.from_s('g2')] = Pawn.white
+      cb[ChessPosition.from_s('h4')] = Pawn.black
+
+      # Performing en passant move
+      cb.move(ChessMove.from_s('g2g4'))
+      cb.move(ChessMove.from_s('h4g3'))
+
+      expect(cb[ChessPosition.from_s('g4')]).to eql(nil)
     end
   end
 end
