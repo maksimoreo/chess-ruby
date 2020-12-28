@@ -74,6 +74,11 @@ class Chessboard
 
   def initialize_copy(original)
     @board = original.board.dup
+
+    @info = {
+      white: { castling: original.info[:white][:castling].dup },
+      black: { castling: original.info[:black][:castling].dup }
+    }
   end
 
   def to_json
