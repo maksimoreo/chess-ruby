@@ -94,6 +94,34 @@ describe Pawn do
       moves = Pawn.white.available_moves(ChessPosition.from_s('d2'), cb)
       expect(moves.size).to eql(2)
     end
+
+    it 'returns 4 different moves for pawn promotion' do
+      cb = Chessboard.new
+      cb[ChessPosition.from_s('f7')] = Pawn.white
+      moves = cb.available_moves_from(ChessPosition.from_s('f7'))
+      expect(moves.size).to eql(4)
+    end
+
+    it 'returns 8 different moves for pawn promotion when can capture' do
+      cb = Chessboard.new
+      cb[ChessPosition.from_s('b7')] = Pawn.white
+      cb[ChessPosition.from_s('c8')] = Queen.black
+      moves = cb.available_moves_from(ChessPosition.from_s('b7'))
+      expect(moves.size).to eql(8)
+    end
+  end
+
+  describe '#allowed_moves' do
+    it 'returns 4 different moves for pawn promotion' do
+      cb = Chessboard.new
+      cb[ChessPosition.from_s('c7')] = Pawn.white
+      cb[ChessPosition.from_s('d8')] = Rook.black
+      cb[ChessPosition.from_s('d2')] = King.white
+      cb[ChessPosition.from_s('f6')] = King.black
+
+      moves = cb.allowed_moves_from(ChessPosition.from_s('c7'))
+      expect(moves.size).to eql(4)
+    end
   end
 
   describe '#move' do

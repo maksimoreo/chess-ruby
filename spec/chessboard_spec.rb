@@ -142,17 +142,23 @@ describe Chessboard do
   end
 
   describe '#allowed_moves' do
-    # it 'returns all moves for specified color' do
-    #   moves = Chessboard.default_chessboard.allowed_moves(:white)
-    #   expect(moves.keys.size).to eql(10) # 8 for pawns, 2 for knights
-    #   expect(moves.values.flatten.size).to eql(20) # 16 for pawns, 4 for knights
-    # end
-
     it 'returns all 20 moves from default chessboard' do
       moves = Chessboard.default_chessboard.allowed_moves(:white)
       chess_pieces_n = moves.map { |move| move.from }.uniq.size
       expect(chess_pieces_n).to eql(10) # 8 for pawns, 2 for knights
       expect(moves.size).to eql(20) # 16 for pawns, 4 for knights
+    end
+
+    it 'returns 6 moves' do
+      cb = Chessboard.new
+      cb[ChessPosition.from_s('f7')] = Pawn.white
+      cb[ChessPosition.from_s('e8')] = Rook.black
+      cb[ChessPosition.from_s('g8')] = Knight.black
+      cb[ChessPosition.from_s('f6')] = King.white
+      cb[ChessPosition.from_s('h5')] = King.black
+
+      moves = cb.allowed_moves(:white)
+      expect(moves.size).to eql(6)
     end
   end
 

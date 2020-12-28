@@ -68,6 +68,14 @@ class Pawn < ChessPiece
     cells
   end
 
+  def available_moves(from_cell, chessboard)
+    add_promotion_moves(from_cell, available_cells(from_cell, chessboard))
+  end
+
+  def allowed_moves(from_cell, chessboard)
+    add_promotion_moves(from_cell, allowed_cells(from_cell, chessboard))
+  end
+
   private
 
   def promote(chessboard, pos, promote_to)
@@ -80,5 +88,18 @@ class Pawn < ChessPiece
 
   def start_row_and_direction
     color == :white ? [1, 1] : [6, -1]
+  end
+
+  def add_promotion_moves(from_cell, to_cells)
+    last_row = color == :white ? 7 : 0
+    to_cells.flat_map do |to_cell|
+      if to_cell.i == last_row
+        ChessMove.valid_promotions.map do |promotion_piece_class|
+          ChessMove.new(from_cell, to_cell, promotion_piece_class)
+        end
+      else
+        ChessMove.new(from_cell, to_cell)
+      end
+    end
   end
 end
