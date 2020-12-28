@@ -8,9 +8,18 @@ require_relative '../chess_position'
 class King < ChessPiece
   def allowed_cells(from, chessboard)
     # Not using available_cells(from, cb) here, because it also returns unchecked castlings
-    moves = attack_cells(from, chessboard).select do |cell|
-      chessboard.can_move_or_take?(cell, color) &&
-        !chessboard.cell_under_attack?(cell, ChessPiece.opposite_color(color))
+    moves = attack_cells(from, chessboard).reject do |cell|
+      # Reject occupied cells
+      next true unless chessboard.can_move_or_take?(cell, color)
+
+      # Copy chessboard
+      temp_chessboard = chessboard.clone
+
+      # Perform the move on a temporary chessboard
+      perform_chess_move(ChessMove.new(from, cell), temp_chessboard)
+
+      # Reject moves that result in check
+      temp_chessboard.check?(color)
     end
 
     castlings = allowed_castlings(chessboard, from, color == :white ? 0 : 7)

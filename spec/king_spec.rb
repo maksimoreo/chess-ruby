@@ -147,6 +147,18 @@ describe King do
       expect(moves).not_to include(ChessMove.from_s('e1c1'))
       expect(moves.size).to eql(5)
     end
+
+    it "doesn't allow to go on attacked cells when in check" do
+      cb = Chessboard.new
+      cb[ChessPosition.from_s('b3')] = King.white
+      cb[ChessPosition.from_s('e3')] = Queen.white
+      cb[ChessPosition.from_s('e6')] = King.black
+
+      moves = cb.allowed_moves_from(ChessPosition.from_s('e6'))
+
+      expect(moves.size).to eql(6)
+      expect(moves).not_to include(ChessMove.from_s('e6e7'))
+    end
   end
 
   describe '#move' do
